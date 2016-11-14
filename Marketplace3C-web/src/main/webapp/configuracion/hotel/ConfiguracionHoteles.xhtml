@@ -8,12 +8,11 @@
         <h:head>
             <f:facet name="first">
                 <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
-                <title>Configuracion clientes</title>
+                <title>Configuracion hoteles</title>
             </f:facet>
         </h:head>
         <h:body>
-            <h:form id="formClientes">
-                <p:growl autoUpdate="true"/>
+            <h:form id="formHoteles">
                 <p:menubar>
                         <f:facet name="options">
                             <p:commandButton type="button" value="Logout" icon="ui-icon-extlink">
@@ -25,10 +24,10 @@
                 <p:layout id="layoutPadre" style="min-width:400px;min-height:700px;" >
                     <p:layoutUnit position="west" resizable="true" size="250" minSize="40" maxSize="400" >
                          <p:panelMenu style="width:300px">
-                            <p:submenu label="Configuracion Hoteles">
-                                <p:menuitem value="Consultar hoteles" actionListener="#{menuView.update}"  icon="ui-icon-home" />
-                                <p:menuitem value="Crear hotel" actionListener="#{menuView.update}"  icon="ui-icon-home" />
-                            </p:submenu>
+                            <p:submenu label="Configuracion Clientes">
+                                <p:menuitem value="Configuracion clientes" actionListener="#{messagesUtil.configuracionClientes()}" icon="ui-icon-person" 
+                                            url="cliente/configuracionClientes.xhtml"/>
+                            </p:submenu> 
                             <p:submenu label="Configuracion Parques">
                                 <p:menuitem value="Crear parque" actionListener="#{menuView.delete}"  ajax="false" icon="ui-icon-flag"/>
                             </p:submenu>

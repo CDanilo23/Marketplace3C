@@ -5,6 +5,7 @@
  */
 package co.com.uniminuto.ejb;
 
+import co.com.uniminuto.entities.Rol;
 import co.com.uniminuto.entities.Usuario;
 import java.util.List;
 import javax.ejb.Local;
@@ -27,9 +28,11 @@ public interface UsuarioFacadeLocal {
     Usuario find(Object id);
 
     List<Usuario> findAll();
-
+    
     List<Usuario> findUserByIdAndPass(String user, String password);
     
     List<Usuario> findUserByUserAndName(String user, String name);
+
+    public List<Usuario> findByRol(Rol rol);
 
 }

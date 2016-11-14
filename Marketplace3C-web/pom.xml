@@ -21,18 +21,13 @@
     </properties>
     
     <dependencies>
-        <!--        <dependency>
+        <dependency>
             <groupId>net.bootsfaces</groupId>
             <artifactId>bootsfaces</artifactId>
             <version>0.8.5</version>
             <scope>compile</scope>
-        </dependency>-->
-        <!--        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>Marketplace2C-model</artifactId>
-            <version>${project.version}</version>
-            <type>jar</type>
-        </dependency>-->
+        </dependency>
+
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>Marketplace3C-ejb</artifactId>
@@ -48,7 +43,8 @@
         <dependency>
             <groupId>org.primefaces</groupId>
             <artifactId>primefaces</artifactId>
-            <version>5.0</version>
+            <version>6.0</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>javax</groupId>

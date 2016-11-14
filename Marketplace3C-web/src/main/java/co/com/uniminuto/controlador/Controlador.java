@@ -31,8 +31,11 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
@@ -48,22 +51,25 @@ import javax.servlet.http.Part;
 @ManagedBean(name = "controlador")
 @ViewScoped
 public class Controlador {
-    
+
     private List<Usuario> listaClientesPendientes;
 
-    @EJB(mappedName = "UsuarioFacadeBean", lookup = "java:app/Marketplace2C-ejb-1.0-SNAPSHOT/UsuarioFacade!co.com.uniminuto.ejb.UsuarioFacadeLocal")
+    private String usuario;
+    private String password;
+
+    @EJB(mappedName = "UsuarioFacadeBean", lookup = "java:app/Marketplace3C-ejb-1.0-SNAPSHOT/UsuarioFacade!co.com.uniminuto.ejb.UsuarioFacadeLocal")
     private UsuarioFacadeLocal usuarioFacadeLocal;
-    
-    @EJB(mappedName = "HotelFacadeBean", lookup = "java:app/Marketplace2C-ejb-1.0-SNAPSHOT/HotelFacade!co.com.uniminuto.ejb.HotelFacadeLocal")
+
+    @EJB(mappedName = "HotelFacadeBean", lookup = "java:app/Marketplace3C-ejb-1.0-SNAPSHOT/HotelFacade!co.com.uniminuto.ejb.HotelFacadeLocal")
     protected HotelFacadeLocal hotelFacadeLocal;
 
-    @EJB(mappedName = "ParqueFacadeBean", lookup = "java:app/Marketplace2C-ejb-1.0-SNAPSHOT/ParqueFacade!co.com.uniminuto.ejb.ParqueFacadeLocal")
+    @EJB(mappedName = "ParqueFacadeBean", lookup = "java:app/Marketplace3C-ejb-1.0-SNAPSHOT/ParqueFacade!co.com.uniminuto.ejb.ParqueFacadeLocal")
     protected ParqueFacadeLocal parqueFacadeLocal;
 
-    @EJB(mappedName = "ArchivoFacadeBean", lookup = "java:app/Marketplace2C-ejb-1.0-SNAPSHOT/ArchivoFacade!co.com.uniminuto.ejb.ArchivoFacadeLocal")
+    @EJB(mappedName = "ArchivoFacadeBean", lookup = "java:app/Marketplace3C-ejb-1.0-SNAPSHOT/ArchivoFacade!co.com.uniminuto.ejb.ArchivoFacadeLocal")
     protected ArchivoFacadeLocal archivoFacadeLocal;
 
-    @EJB(mappedName = "PlanFacadeBean", lookup = "java:app/Marketplace2C-ejb-1.0-SNAPSHOT/PlanFacade!co.com.uniminuto.ejb.PlanFacadeLocal")
+    @EJB(mappedName = "PlanFacadeBean", lookup = "java:app/Marketplace3C-ejb-1.0-SNAPSHOT/PlanFacade!co.com.uniminuto.ejb.PlanFacadeLocal")
     protected PlanFacadeLocal planFacadeLocal;
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
@@ -91,9 +97,7 @@ public class Controlador {
         if (accion.equals("registro")) {
             this.registroCliente(request, response);
         }
-        if (accion.equals("login")) {
-            this.login(request, response);
-        }
+
         if (accion.equals("CrearParque")) {
             this.crearParque(request, response);
         }
@@ -136,21 +140,38 @@ public class Controlador {
 //            response.sendRedirect("login.jsp");
 //        }
 //    }
-    
-    public void listarClientesPendientes(){
+    public void listarClientesPendientes() {
         listaClientesPendientes = usuarioFacadeLocal.findAll();
     }
-    public void login(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        List<Usuario> listUser = usuarioFacadeLocal.findUserByIdAndPass(request.getParameter("user"), request.getParameter("password"));
-        if (listUser.get(0).getRol().getIdRol().equals(1)) {
-            response.sendRedirect("configuracion/indexConfig.jsp");
-        } else if (listUser.get(0).getRol().getIdRol().equals(2)) {
-            response.sendRedirect("Proveedor/InicioProvedor.jsp?idUser=" + listUser.get(0).getIdUsuario());
-        } else if (listUser.get(0).getRol().getIdRol().equals(3)) {
-            response.sendRedirect("Cliente/InicioCliente.jsp");
-        } else {
-            request.getSession().setAttribute("ex", new Exception("El usuario no existe en el sistema"));
-            response.sendRedirect("login.jsp");
+
+    public void login() {
+        try {
+
+            ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+            List<Usuario> listUser = usuarioFacadeLocal.findUserByIdAndPass(usuario, password);
+            if (!listUser.isEmpty()) {
+
+                switch (listUser.get(0).getRol().getIdRol()) {
+                    case 1:
+                        externalContext.redirect("faces/configuracion/indexConfig.xhtml");
+                        break;
+                    case 2:
+                        externalContext.redirect("Proveedor/InicioProvedor.jsp?idUser=" + listUser.get(0).getIdUsuario());
+                        break;
+                    case 3:
+                        externalContext.redirect("Cliente/InicioCliente.jsp");
+                        break;
+                    default:
+                        externalContext.redirect("login.xhtml");
+                        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Alvertencia!", "El usuario no tiene rol asignado en el sistema"));
+                        break;
+                }
+            } else {
+                externalContext.redirect("login.xhtml");
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Alvertencia!", "El usuario no existe en el sistema"));
+            }
+        } catch (Exception e) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Error al redireccionar a la pagina solicitada"));
         }
     }
 
@@ -361,16 +382,25 @@ public class Controlador {
     }
 
     public void registroParcialCliente(Usuario u) throws GeneralSecurityException {
-        Usuario usuario = usuarioFacadeLocal.find(u.getIdUsuario());
-        ControladorEnvioCorreo.envioCorreo(usuario);
-        usuario.setEstado(EstadoEnum.ACTIVO.getValor());
-        usuarioFacadeLocal.edit(usuario);
+        Usuario user = usuarioFacadeLocal.find(u.getIdUsuario());
+        ControladorEnvioCorreo.envioCorreo(user);
+        user.setEstado(EstadoEnum.ACTIVO.getValor());
+        usuarioFacadeLocal.edit(user);
     }
 
     public void elimiarPaquete(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         planFacadeLocal.remove(new Plan(Integer.valueOf(request.getParameter("idPaquete"))));
         response.sendRedirect("Proveedor/ConsultarPaquetes.jsp?idUser=" + request.getParameter("idUser"));
+    }
+
+    public void salir() {
+        try {
+            ExternalContext ex = FacesContext.getCurrentInstance().getExternalContext();
+            ex.redirect("../login.xhtml");
+        } catch (Exception e) {
+            
+        }
     }
 
     public UsuarioFacadeLocal getUsuarioFacadeLocal() {
@@ -382,11 +412,27 @@ public class Controlador {
     }
 
     public List<Usuario> getListaClientesPendientes() {
-        return listaClientesPendientes;
+        return usuarioFacadeLocal.findByRol(new Rol(RolEnum.CLIENTE.getValor()));
     }
 
     public void setListaClientesPendientes(List<Usuario> listaClientesPendientes) {
         this.listaClientesPendientes = listaClientesPendientes;
+    }
+
+    public String getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(String usuario) {
+        this.usuario = usuario;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
 }

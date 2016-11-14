@@ -5,6 +5,7 @@
  */
 package co.com.uniminuto.ejb;
 
+import co.com.uniminuto.entities.Rol;
 import co.com.uniminuto.entities.Usuario;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +61,11 @@ public class UsuarioFacade extends AbstractFacade<Usuario> implements UsuarioFac
             e.printStackTrace();
         }
         return lu;
+    }
+
+    @Override
+    public List<Usuario> findByRol(Rol rol) {
+        return em.createNamedQuery("Usuario.findByRol").setParameter("rol", rol).getResultList();
     }
 
 }

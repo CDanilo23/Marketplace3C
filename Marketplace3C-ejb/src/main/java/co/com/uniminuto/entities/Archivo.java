@@ -32,8 +32,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "Archivo.findAll", query = "SELECT a FROM Archivo a"),
     @NamedQuery(name = "Archivo.findByIdArchivo", query = "SELECT a FROM Archivo a WHERE a.idArchivo = :idArchivo"),
-    @NamedQuery(name = "Archivo.findByNombre", query = "SELECT a FROM Archivo a WHERE a.nombre = :nombre"),
-    @NamedQuery(name = "Archivo.findByIdPlan", query = "SELECT a FROM Archivo a WHERE a.idPlan = :idPlan")})
+    @NamedQuery(name = "Archivo.findByNombre", query = "SELECT a FROM Archivo a WHERE a.nombre = :nombre")})
 public class Archivo implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -45,15 +44,9 @@ public class Archivo implements Serializable {
     @Size(max = 45)
     @Column(name = "NOMBRE")
     private String nombre;
-    @Lob
+
     @Column(name = "IMG")
-    private byte[] img;
-    @Transient
-    private String imgString;
-    
-    @OneToOne(optional = false)
-    @JoinColumn(name = "Int_IdPlan", referencedColumnName = "ID_PLAN")
-    private Plan idPlan;
+    private String img;
 
     public Archivo() {
     }
@@ -76,22 +69,6 @@ public class Archivo implements Serializable {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
-    }
-
-    public byte[] getImg() {
-        return img;
-    }
-
-    public void setImg(byte[] img) {
-        this.img = img;
-    }
-
-    public Plan getIdPlan() {
-        return idPlan;
-    }
-
-    public void setIdPlan(Plan idPlan) {
-        this.idPlan = idPlan;
     }
 
     @Override
@@ -119,12 +96,12 @@ public class Archivo implements Serializable {
         return "co.com.uniminuto.entities.Archivo[ idArchivo=" + idArchivo + " ]";
     }
 
-    public String getImgString() {
-        return imgString;
+    public String getImg() {
+        return img;
     }
 
-    public void setImgString(String imgString) {
-        this.imgString = imgString;
+    public void setImg(String img) {
+        this.img = img;
     }
     
 }

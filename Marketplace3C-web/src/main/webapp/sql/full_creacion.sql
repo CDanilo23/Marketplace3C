@@ -10,8 +10,8 @@
 
 -- MySQL Workbench Forward Engineering
 
-SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
-SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_UNIQUE_CHECKS=1, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=1, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
 -- -----------------------------------------------------
@@ -31,7 +31,7 @@ USE `Marketplace` ;
 -- Table `Marketplace`.`UBICACION`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `Marketplace`.`UBICACION` (
-  `ID_UBICACION` INT NOT NULL,
+  `ID_UBICACION` INT(11) NOT NULL,
   `CIUDAD` VARCHAR(45) NULL,
   `PAIS` VARCHAR(45) NULL,
   PRIMARY KEY (`ID_UBICACION`))
@@ -42,7 +42,7 @@ ENGINE = InnoDB;
 -- Table `Marketplace`.`PARQUE`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `Marketplace`.`PARQUE` (
-  `ID_PARQUE` INT NOT NULL,
+  `ID_PARQUE` INT(11) NOT NULL,
   `PARQUE` VARCHAR(45) NULL,
   `ID_UBICACION` INT NULL,
   PRIMARY KEY (`ID_PARQUE`),
@@ -59,11 +59,11 @@ ENGINE = InnoDB;
 -- Table `Marketplace`.`HOTEL`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `Marketplace`.`HOTEL` (
-  `ID_HOTEL` INT NOT NULL AUTO_INCREMENT,
+  `ID_HOTEL` INT(11) NOT NULL AUTO_INCREMENT,
   `NOMBRE` VARCHAR(45) NULL,
-  `NIVEL` INT NULL,
+  `NIVEL` INT(11) NULL,
   `DIRECCION` VARCHAR(45) NULL,
-  `ID_UBICACION` INT NULL,
+  `ID_UBICACION` INT(11) NULL,
   PRIMARY KEY (`ID_HOTEL`),
   INDEX `UBICACION_FK_idx` (`ID_UBICACION` ASC),
   CONSTRAINT `UBICACION_H_FK`
@@ -75,30 +75,38 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
+-- Table `Marketplace`.`ARCHIVO`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `Marketplace`.`ARCHIVO` (
+  `ID_ARCHIVO` INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `NOMBRE` VARCHAR(45) NULL,
+  `IMG` VARCHAR(100)
+);
+
+-- -----------------------------------------------------
 -- Table `Marketplace`.`PLAN`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `Marketplace`.`PLAN` (
-  `ID_PLAN` INT NOT NULL AUTO_INCREMENT,
+  `ID_PLAN` INT(11) NOT NULL AUTO_INCREMENT,
   `NOMBRE_PLAN` VARCHAR(45) NULL,
-  `COSTO` INT NULL,
+  `COSTO` INT(11) NULL,
   `DESCRIPCION` VARCHAR(255) NULL,
-  `DIAS` INT NULL,
-  `NOCHES` INT NULL,
+  `DIAS` INT(11) NULL,
+  `NOCHES` INT(11) NULL,
   `ID_PARQUE` INT NULL,
   `ID_HOTEL` INT NULL,
+  `ID_ARCHIVO` INT(11) NULL,
   PRIMARY KEY (`ID_PLAN`),
   INDEX `DESTINO_idx` (`ID_PARQUE` ASC),
   INDEX `FK_HOTEL_idx` (`ID_HOTEL` ASC),
   CONSTRAINT `DESTINO`
     FOREIGN KEY (`ID_PARQUE`)
-    REFERENCES `Marketplace`.`PARQUE` (`ID_PARQUE`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    REFERENCES `Marketplace`.`PARQUE` (`ID_PARQUE`),
   CONSTRAINT `FK_HOTEL`
     FOREIGN KEY (`ID_HOTEL`)
-    REFERENCES `Marketplace`.`HOTEL` (`ID_HOTEL`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    REFERENCES `Marketplace`.`HOTEL` (`ID_HOTEL`),
+   CONSTRAINT `ARCHIVO_FK` FOREIGN KEY (`ID_ARCHIVO`)
+   REFERENCES `Marketplace`.`archivo` (`ID_ARCHIVO`))
 ENGINE = InnoDB;
 
 
@@ -106,7 +114,7 @@ ENGINE = InnoDB;
 -- Table `Marketplace`.`ROL`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `Marketplace`.`ROL` (
-  `ID_ROL` INT NOT NULL AUTO_INCREMENT,
+  `ID_ROL` INT(11) NOT NULL AUTO_INCREMENT,
   `NOMBRE` VARCHAR(45) NULL,
   PRIMARY KEY (`ID_ROL`))
 ENGINE = InnoDB;
@@ -124,6 +132,8 @@ CREATE TABLE IF NOT EXISTS `Marketplace`.`USUARIO` (
   `NUMERO_DOCUMENTO` INT NULL,
   `TIPO_DOCUMENTO` INT NULL,
   `DIRECCION` VARCHAR(45) NULL,
+  `CORREO` VARCHAR (35) NULL,
+  `ESTADO` INT(1) NULL, 
   `TELEFONO` INT NULL,
   `ROL` INT NULL,
   PRIMARY KEY (`ID_USUARIO`),
@@ -160,21 +170,6 @@ CREATE TABLE IF NOT EXISTS `Marketplace`.`USUARIO_PLAN` (
 ENGINE = InnoDB;
 
 
--- -----------------------------------------------------
--- Table `Marketplace`.`ARCHIVO`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Marketplace`.`ARCHIVO` (
-  `ID_ARCHIVO` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  `NOMBRE` VARCHAR(45) NULL,
-  `IMG` longblob,
-  `Int_IdPlan` INT not NULL,
-  INDEX `PLAN_FK_idx` (`Int_IdPlan` ASC));
-
- alter table archivo add CONSTRAINT `PLAN_A_FK` FOREIGN KEY (`Int_IdPlan`) REFERENCES `Marketplace`.`PLAN` (`ID_PLAN`);
-
-
-
-
 SET SQL_MODE=@OLD_SQL_MODE;
-SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
-SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+SET FOREIGN_KEY_CHECKS=1;
+SET UNIQUE_CHECKS=1;

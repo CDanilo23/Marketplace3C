@@ -61,11 +61,7 @@ public class HotelFacade implements  HotelFacadeLocal{
     @Override
     public List<Hotel> findAllHoteles(){
         List<Hotel> listaHoteles = null;
-        try {
             listaHoteles = em.createNamedQuery("Hotel.findAll", Hotel.class).getResultList();
-        } catch (Exception e) {
-            throw e;
-        }
         return listaHoteles;
     }
 

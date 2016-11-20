@@ -19,6 +19,8 @@ public interface ArchivoFacadeLocal {
     void create(Archivo archivo);
 
     void edit(Archivo archivo);
+    
+    Archivo merge(Archivo archivo);
 
     void remove(Archivo archivo);
 

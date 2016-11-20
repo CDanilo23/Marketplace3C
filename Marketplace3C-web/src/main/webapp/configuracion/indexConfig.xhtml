@@ -29,17 +29,18 @@
                                             url="cliente/configuracionClientes.xhtml"/>
                             </p:submenu>
                             <p:submenu label="Configuracion Hoteles">
-                                <p:menuitem value="Consultar hoteles" actionListener="#{menuView.update}"  icon="ui-icon-home" />
-                                <p:menuitem value="Crear hotel" actionListener="#{menuView.update}"  icon="ui-icon-home" />
+                                <p:menuitem value="Consultar Hoteles" actionListener="#{messagesUtil.configuracionHoteles()}" icon="ui-icon-home" url="hotel/configuracionHoteles.xhtml"/>
                             </p:submenu>
                             <p:submenu label="Configuracion Parques">
-                                <p:menuitem value="Crear parque" actionListener="#{menuView.delete}"  ajax="false" icon="ui-icon-flag"/>
+                                <p:menuitem value="Consultar Parques" actionListener="#{messagesUtil.configuracionParques()}" icon="ui-icon-flag" url="parque/configuracionParques.xhtml"/>
                             </p:submenu>
-                            <p:submenu label="Configuracion Planes" icon="ui-icon-note" >
-                                <p:menuitem value="Crear plan" />
+                            <p:submenu label="Configuracion Planes">
+                                <p:menuitem value="Consultar Planes" actionListener="#{messagesUtil.configuracionPlanes()}" icon="ui-icon-note" url="plan/configuracionPlanes.xhtml"/>
+                                <p:menuitem value="Crear plan" icon="ui-icon-note"/>
                             </p:submenu>
-                            <p:submenu label="Configuracion Proveedores" icon="ui-icon-person" >
-                                <p:menuitem value="Crear Proveedor" />
+                            <p:submenu label="Configuracion Proveedores">
+                                <p:menuitem value="Consultar Proveedores" actionListener="#{messagesUtil.configuracionProveedores()}" icon="ui-icon-person" url="proveedor/configuracionProveedores.xhtml"/>
+                                <p:menuitem value="Crear Proveedor" icon="ui-icon-person"/>
                             </p:submenu>
                         </p:panelMenu>
                     </p:layoutUnit>

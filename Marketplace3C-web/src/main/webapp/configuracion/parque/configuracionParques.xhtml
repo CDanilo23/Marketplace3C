@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <f:view contentType="text/html">
+        <h:head>
+            <f:facet name="first">
+                <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
+                <title>Configuracion parques</title>
+            </f:facet>
+        </h:head>
+        <h:body>
+            <h:form id="formParques">
+                <p:menubar>
+                        <f:facet name="options">
+                            <p:commandButton type="button" value="Logout" icon="ui-icon-extlink">
+                                <p:ajax listener="#{controlador.salir()}"/>
+                            </p:commandButton>
+                        </f:facet>
+                </p:menubar>
+
+                <p:layout id="layoutPadre" style="min-width:400px;min-height:700px;" >
+                    <p:layoutUnit position="west" resizable="true" size="250" minSize="40" maxSize="400" >
+                         <p:panelMenu style="width:300px">
+                            <p:submenu label="Configuracion Clientes">
+                                <p:menuitem value="Configuracion clientes" 
+                                            icon="ui-icon-person" 
+                                            url="../cliente/configuracionClientes.xhtml" 
+                                            onstart="PF('dlgLoading').show()" oncomplete="PF('dlgLoading').hide()"/>
+                            </p:submenu> 
+                            <p:submenu label="Hoteles">
+                                <p:menuitem value="Consultar Hoteles" 
+                                            icon="ui-icon-flag" 
+                                            url="../hotel/configuracionHoteles.xhtml"
+                                            update="PF"/>
+                            </p:submenu>
+                            <p:submenu label="Consulta Planes">
+                                <p:menuitem value="Consultar plan" 
+                                            icon="ui-icon-note"
+                                            url="../plan/configuracionPlanes.xhtml" />
+                            </p:submenu>
+                            <p:submenu label="Configuracion Proveedores" icon="ui-icon-person" >
+                                <p:menuitem value="Crear Proveedor" />
+                            </p:submenu>
+                        </p:panelMenu>
+                    </p:layoutUnit>
+                    <p:layoutUnit position="center">
+                        <p:dataTable value="#{controlador.listaParques}" 
+                                     id="dtParques" 
+                                     paginator="true" 
+                                     rows="5"
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     emptyMessage="No se encontraron parques"
+                                     rowsPerPageTemplate="5,10,15" 
+                                     styleClass="tablaRes"
+                                     var="parque" >
+
+                            <f:facet name="header">  
+                                Parques registrados en el sistema
+                            </f:facet>
+
+                            <p:column headerText="Nombre Parque" 
+                                      sortBy="#{parque.parque}"
+                                      filterBy="#{parque.parque}" 
+                                      filterMatchMode="contains">
+                                <h:outputText value="#{parque.parque}" />
+                            </p:column>
+
+                            <p:column headerText="Ciudad"
+                                      sortBy="#{parque.idUbicacion.ciudad}"
+                                      filterBy="#{parque.idUbicacion.ciudad}"
+                                      filterMatchMode="contains">
+                                <h:outputText value="#{parque.idUbicacion.ciudad}" />
+                            </p:column>
+
+                            <p:column headerText="Pais"
+                                      sortBy="#{parque.idUbicacion.pais}"
+                                      filterBy="#{parque.idUbicacion.pais}" 
+                                      filterMatchMode="contains">
+                                <h:outputText value="#{parque.idUbicacion.pais}" />
+                            </p:column>
+
+                            <!-- Editar -->
+                            <p:column style="font-size:11px; font-weight: bold">
+                                <div align ="center">
+                                    <p:commandLink>
+                                        <p:ajax update=":formParques" process="@form" />
+                                        <p:graphicImage id="imgEdit" value="../../img/modificar.png"/>
+                                    </p:commandLink>
+                                </div>    
+                            </p:column>
+                            <!-- Eliminar -->
+                            <p:column style="font-size:11px; font-weight: bold">
+                                <div align ="center">
+                                    <p:commandLink>
+                                        <p:ajax  update=":formParques" process="@form" />
+                                        <p:graphicImage id="imgEdit" value="../../img/eliminar.png"/>
+                                    </p:commandLink>
+                                </div>    
+                            </p:column>
+                        </p:dataTable>
+                        
+                    </p:layoutUnit>
+                </p:layout>
+            </h:form> 
+        </h:body>
+    </f:view>
+</html>

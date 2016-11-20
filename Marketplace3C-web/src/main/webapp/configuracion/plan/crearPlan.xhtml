@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <f:view contentType="text/html">
+        <h:head>
+            <f:facet name="first">
+                <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
+                <title>Configuracion planes</title>
+            </f:facet>
+        </h:head>
+        <h:body>
+            <h:form id="formPlanes" enctype="multipart/form-data">
+                <p:menubar>
+                    <f:facet name="options">
+                        <p:commandButton type="button" value="Logout" icon="ui-icon-extlink">
+                            <p:ajax listener="#{controlador.salir()}"/>
+                        </p:commandButton>
+                    </f:facet>
+                </p:menubar>
+
+                <p:layout id="layoutPadre" style="min-width:400px;min-height:700px;" >
+                    <p:layoutUnit position="west" resizable="true" size="250" minSize="40" maxSize="400" >
+                        <p:panelMenu style="width:300px">
+                            <p:submenu label="Clientes">
+                                <p:menuitem value="Configuracion clientes" 
+                                            icon="ui-icon-person" 
+                                            url="../cliente/configuracionClientes.xhtml"/>
+                            </p:submenu> 
+                            <p:submenu label="Hoteles">
+                                <p:menuitem value="Consultar Hoteles" 
+                                            icon="ui-icon-flag" 
+                                            url="../hotel/configuracionHoteles.xhtml"/>
+                            </p:submenu>
+                            <p:submenu label="Parques">
+                                <p:menuitem value="Consultar Parques" 
+                                            icon="ui-icon-flag" 
+                                            url="../parque/configuracionParques.xhtml"/>
+
+                            </p:submenu>
+                            <p:submenu label="Planes">
+                                <p:menuitem value="Consultar planes" 
+                                            icon="ui-icon-flag" 
+                                            url="../plan/configuracionPlanes.xhtml"/>
+
+                            </p:submenu>
+                            <p:submenu label="Configuracion Proveedores" icon="ui-icon-person" >
+                                <p:menuitem value="Crear Proveedor" />
+                            </p:submenu>
+                        </p:panelMenu>
+                    </p:layoutUnit>
+                    <p:layoutUnit position="center">
+                        <h:panelGrid columns="2">
+                            <p:outputLabel value="Nombre plan" for="idNomPlan"/>
+                            <p:inputText id="idNomPlan" value="#{controlador.planCurrent.nombrePlan}"/>
+
+                            <p:outputLabel value="Descripcion plan" for="idDesc"/>
+                            <p:inputText id="idDesc" value="#{controlador.planCurrent.descripcion}"/>
+
+                            <p:outputLabel value="Costo" for="idCosto"/>
+                            <p:inputText id="idCosto" value="#{controlador.planCurrent.costo}"/>
+
+                            <p:outputLabel value="Dias" for="idDias"/>
+                            <p:inputText id="idDias" value="#{controlador.planCurrent.dias}"/>
+
+                            <p:outputLabel value="Noches" for="idNoches"/>
+                            <p:inputText id="idNoches" value="#{controlador.planCurrent.noches}"/>
+
+                            <p:outputLabel value="Hoteles" for="comboHotel"/>
+                            <p:selectOneMenu value="#{controlador.planCurrent.idHotel.idHotel}" 
+                                             id="comboHotel" 
+                                             style="width: 200px" 
+                                             filter="true" 
+                                             filterMatchMode="contains" 
+                                             effect="fade">
+                                <f:selectItems value="#{controlador.comboHoteles}"/>
+                            </p:selectOneMenu>
+
+                            <p:outputLabel value="Parques" for="comboParques"/>
+                            <p:selectOneMenu value="#{controlador.planCurrent.idParque.idParque}" 
+                                             id="comboParques" 
+                                             style="width: 200px" 
+                                             filter="true" 
+                                             filterMatchMode="contains" 
+                                             effect="fade">
+                                <f:selectItems value="#{controlador.comboParques}"/>
+                            </p:selectOneMenu>
+
+                            <p:growl id="msg"></p:growl>
+                            <p:fileUpload id="uploadImg" 
+                                          fileUploadListener="#{controlador.upload}" 
+                                          value="Cargar Imagen"
+                                          allowTypes="/(\.|\/)(gif|jpe?g|png)$/"
+                                          sizeLimit="10000000" 
+                                          update="msg">
+                            </p:fileUpload>
+                        </h:panelGrid>
+                        <div align='center'>
+                            <p:commandButton value="Guardar" action="#{controlador.crearPlan()}"/>
+                        </div>
+                    </p:layoutUnit>
+                </p:layout>
+            </h:form> 
+        </h:body>
+    </f:view>
+</html>

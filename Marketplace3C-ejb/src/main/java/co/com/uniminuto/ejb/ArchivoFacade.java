@@ -29,4 +29,8 @@ public class ArchivoFacade extends AbstractFacade<Archivo> implements ArchivoFac
         super(Archivo.class);
     }
     
+    public Archivo merge(Archivo archivo){
+       return em.merge(archivo);
+    }
+    
 }

@@ -6,12 +6,11 @@
 package co.com.uniminuto.entities;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -19,9 +18,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import javax.validation.constraints.Size;
 
 /**
@@ -64,9 +62,9 @@ public class Plan implements Serializable {
     @JoinColumn(name = "ID_HOTEL", referencedColumnName = "ID_HOTEL")
     @ManyToOne
     private Hotel idHotel;
-    
-    @Transient
-    private Archivo archivo;
+    @JoinColumn(name = "ID_ARCHIVO", referencedColumnName = "ID_ARCHIVO")
+    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    private Archivo idArchivo;
 
     public Plan() {
     }
@@ -164,20 +162,12 @@ public class Plan implements Serializable {
         return "co.com.uniminuto.entities.Plan[ idPlan=" + idPlan + " ]";
     }
 
-//    public List<Archivo> getListaArchivo() {
-//        return listaArchivo;
-//    }
-//
-//    public void setListaArchivo(List<Archivo> listaArchivo) {
-//        this.listaArchivo = listaArchivo;
-//    }
-
-    public Archivo getArchivo() {
-        return archivo;
+    public Archivo getIdArchivo() {
+        return idArchivo;
     }
 
-    public void setArchivo(Archivo archivo) {
-        this.archivo = archivo;
+    public void setIdArchivo(Archivo idArchivo) {
+        this.idArchivo = idArchivo;
     }
     
 }

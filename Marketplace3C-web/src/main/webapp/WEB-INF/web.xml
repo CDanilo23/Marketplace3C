@@ -5,10 +5,10 @@
         <param-value>Development</param-value>
     </context-param>
     <context-param>
-   <param-name>facelets.SKIP_COMMENTS</param-name>
-   <param-value>true</param-value>
-</context-param>
-<!--    <servlet>
+        <param-name>facelets.SKIP_COMMENTS</param-name>
+        <param-value>true</param-value>
+    </context-param>
+    <!--    <servlet>
         <servlet-name>Controlador</servlet-name>
         <servlet-class>co.com.uniminuto.controlador.Controlador</servlet-class>
     </servlet>-->
@@ -17,7 +17,7 @@
         <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
-<!--    <servlet-mapping>
+    <!--    <servlet-mapping>
         <servlet-name>Controlador</servlet-name>
         <url-pattern>/Controlador</url-pattern>
     </servlet-mapping>-->
@@ -34,7 +34,7 @@
         <param-name>primefaces.THEME</param-name>
         <param-value>bootstrap</param-value>
     </context-param>
-   <!-- <filter>
+    <!-- <filter>
         <filter-name>FilterLogin</filter-name>
         <filter-class>co.com.uniminuto.filter.FilterLogin</filter-class>
     </filter>
@@ -49,4 +49,18 @@
         <exception-type>Exception</exception-type>
         <location>/error.jsp</location>
     </error-page>
+    
+    <filter>
+        <filter-name>PrimeFaces FileUpload Filter</filter-name>
+        <filter-class>org.primefaces.webapp.filter.FileUploadFilter</filter-class>
+    </filter>
+    
+    <context-param>
+        <param-name>thresholdSize</param-name>
+        <param-value>51200</param-value>
+    </context-param>
+    <context-param>
+        <param-name>uploadDirectory</param-name>
+        <param-value>C:\Users\pc\Documents\NetBeansProjects\Marketplace2Corte\Marketplace2Corte\Marketplace3C-web\src\main\webapp\img</param-value>
+    </context-param>
 </web-app>

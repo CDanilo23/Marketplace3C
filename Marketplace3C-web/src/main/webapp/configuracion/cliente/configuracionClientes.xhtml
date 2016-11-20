@@ -26,14 +26,19 @@
                     <p:layoutUnit position="west" resizable="true" size="250" minSize="40" maxSize="400" >
                          <p:panelMenu style="width:300px">
                             <p:submenu label="Configuracion Hoteles">
-                                <p:menuitem value="Consultar hoteles" actionListener="#{menuView.update}"  icon="ui-icon-home" />
-                                <p:menuitem value="Crear hotel" actionListener="#{menuView.update}"  icon="ui-icon-home" />
+                                <p:menuitem value="Consultar hoteles"
+                                            icon="ui-icon-home"
+                                            url="../hotel/configuracionHoteles.xhtml"/>
                             </p:submenu>
                             <p:submenu label="Configuracion Parques">
-                                <p:menuitem value="Crear parque" actionListener="#{menuView.delete}"  ajax="false" icon="ui-icon-flag"/>
+                                <p:menuitem value="Consultar parques" 
+                                            icon="ui-icon-flag"
+                                            url="../parque/configuracionParques.xhtml"/>
                             </p:submenu>
-                            <p:submenu label="Configuracion Planes" icon="ui-icon-note" >
-                                <p:menuitem value="Crear plan" />
+                            <p:submenu label="Configuracion Planes" >
+                                <p:menuitem value="Consultar planes" 
+                                            icon="ui-icon-note"
+                                            url="../plan/configuracionPlanes.xhtml"/>
                             </p:submenu>
                             <p:submenu label="Configuracion Proveedores" icon="ui-icon-person" >
                                 <p:menuitem value="Crear Proveedor" />
@@ -42,7 +47,7 @@
                     </p:layoutUnit>
                     <p:layoutUnit position="center">
                         <p:dataTable value="#{controlador.listaClientesPendientes}" 
-                                     id="dtCapacitaciones" 
+                                     id="dtClientes" 
                                      paginator="true" 
                                      rows="5"
                                      paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"

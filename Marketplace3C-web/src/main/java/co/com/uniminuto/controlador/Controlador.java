@@ -18,30 +18,37 @@ import co.com.uniminuto.entities.Rol;
 import co.com.uniminuto.entities.Ubicacion;
 import co.com.uniminuto.entities.Usuario;
 import co.com.uniminuto.util.ControladorEnvioCorreo;
-import co.com.uniminuto.util.ConvertidorBlob;
 import co.com.uniminuto.util.EstadoEnum;
 import co.com.uniminuto.util.GeneradorMD5;
 import co.com.uniminuto.util.RolEnum;
 import co.com.uniminuto.util.TipoDocumentoEnum;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.math.BigInteger;
+import java.io.OutputStream;
+import java.io.Serializable;
 import java.security.GeneralSecurityException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.faces.model.SelectItem;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
+import org.primefaces.event.FileUploadEvent;
 
 /**
  *
@@ -50,18 +57,18 @@ import javax.servlet.http.Part;
 @MultipartConfig(maxFileSize = 16177215)
 @ManagedBean(name = "controlador")
 @ViewScoped
-public class Controlador {
-
-    private List<Usuario> listaClientesPendientes;
+public class Controlador implements Serializable {
 
     private String usuario;
     private String password;
+    private Plan planCurrent;
+    private Hotel hotelCurrent;
+    private Parque parqueCurrent;
+    private String destination = "C:\\Users\\pc\\Documents\\NetBeansProjects\\Marketplace2Corte\\Marketplace2Corte\\Marketplace3C-web\\src\\main\\webapp\\img\\";
+    private File file;
 
     @EJB(mappedName = "UsuarioFacadeBean", lookup = "java:app/Marketplace3C-ejb-1.0-SNAPSHOT/UsuarioFacade!co.com.uniminuto.ejb.UsuarioFacadeLocal")
     private UsuarioFacadeLocal usuarioFacadeLocal;
-
-    @EJB(mappedName = "HotelFacadeBean", lookup = "java:app/Marketplace3C-ejb-1.0-SNAPSHOT/HotelFacade!co.com.uniminuto.ejb.HotelFacadeLocal")
-    protected HotelFacadeLocal hotelFacadeLocal;
 
     @EJB(mappedName = "ParqueFacadeBean", lookup = "java:app/Marketplace3C-ejb-1.0-SNAPSHOT/ParqueFacade!co.com.uniminuto.ejb.ParqueFacadeLocal")
     protected ParqueFacadeLocal parqueFacadeLocal;
@@ -72,81 +79,19 @@ public class Controlador {
     @EJB(mappedName = "PlanFacadeBean", lookup = "java:app/Marketplace3C-ejb-1.0-SNAPSHOT/PlanFacade!co.com.uniminuto.ejb.PlanFacadeLocal")
     protected PlanFacadeLocal planFacadeLocal;
 
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException, Exception {
-        //La accion se va a guardar en un caja de texto oculto que nos dira que accion
-        //debemos hacer
-//        response.sendRedirect("configuracion/indexConfig.jsp");
-        String accion = request.getParameter("accion");
-        Integer idCliente = (Integer) request.getSession().getAttribute("idCliente");
-        String envioCorreo = (String) request.getSession().getAttribute("envioCorreo");
-        //variables para eliminar plan
-        Integer idPlan = (Integer) request.getSession().getAttribute("idPlan");
-        String eliminarPlan = (String) request.getSession().getAttribute("eliminarPlan");
-        //variables para eliminar proveedor
-        Integer idProveedor = (Integer) request.getSession().getAttribute("idProveedor");
-        String eliminarPorveedor1 = (String) request.getSession().getAttribute("eliminarPorveedor1");
-        if (idPlan != null && eliminarPlan != null) {
-            this.eliminarPlan(idPlan, request, response);
-        }
-        if (idProveedor != null && eliminarPorveedor1 != null) {
-            this.eliminarProveedor(idProveedor, request, response);
-            idProveedor = null;
-            eliminarPorveedor1 = null;
-        }
-        if (accion.equals("registro")) {
-            this.registroCliente(request, response);
-        }
+    @EJB(mappedName = "HotelFacadeBean", lookup = "java:app/Marketplace3C-ejb-1.0-SNAPSHOT/HotelFacade!co.com.uniminuto.ejb.HotelFacadeLocal")
+    protected HotelFacadeLocal hotelFacadeLocal;
 
-        if (accion.equals("CrearParque")) {
-            this.crearParque(request, response);
-        }
-        if (accion.equals("ModificarParque")) {
-            this.modificarParque(request, response);
-        }
-        if (accion.equals("CrearHotel")) {
-            this.crearHotel(request, response);
-        }
-        if (accion.equals("ModificarHotel")) {
-            this.modificarHotel(request, response);
-        }
-        if (accion.equals("CrearProveedor")) {
-            this.crearProveedor(request, response);
-        }
-        if (accion.equals("ModificarProveedor")) {
-            this.modificarProveedor(request, response);
-        }
-        if (accion.equals("EliminarPaquete")) {
-            this.elimiarPaquete(request, response);
-        }
-
-//        else if (accion.equals("CrearPaquete")) {
-//            this.crearPaquete(request, response);
-//        }
-        if (accion.endsWith("CrearPlan")) {
-            this.crearPlan(request, response);
-        }
-        if (accion.equals("ModificarPlan")) {
-            this.modificarPlan(request, response);
-        }
-    }
-
-//    public void login(HttpServletRequest request, HttpServletResponse response) throws IOException {
-//        List<Usuario> listUser = usuarioFacadeLocal.findUserByIdAndPass(request.getParameter("user"), request.getParameter("password"));
-//        if (listUser != null && !listUser.isEmpty()) {
-//            response.sendRedirect("configuracion/indexConfig.jsp");
-//        } else {
-//            request.getSession().setAttribute("ex", new Exception("El usuario no existe en el sistema"));
-//            response.sendRedirect("login.jsp");
-//        }
-//    }
-    public void listarClientesPendientes() {
-        listaClientesPendientes = usuarioFacadeLocal.findAll();
+    public Controlador() {
+        this.planCurrent = new Plan();
+        this.hotelCurrent = new Hotel();
+        this.parqueCurrent = new Parque();
+        this.planCurrent.setIdHotel(hotelCurrent);
+        this.planCurrent.setIdParque(parqueCurrent);
     }
 
     public void login() {
         try {
-
             ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
             List<Usuario> listUser = usuarioFacadeLocal.findUserByIdAndPass(usuario, password);
             if (!listUser.isEmpty()) {
@@ -175,51 +120,6 @@ public class Controlador {
         }
     }
 
-    public void modificarParque(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        request.getSession().removeAttribute("parque");
-        Parque parque = new Parque();
-        parque.setIdParque(Integer.valueOf(request.getParameter("idParque")));
-        parque.setParque(request.getParameter("nombreParque"));
-        Ubicacion ubicacion = new Ubicacion();
-        ubicacion.setCiudad(request.getParameter("ciudadParque"));
-        ubicacion.setPais(request.getParameter("paisParque"));
-//        parque.setImg(request.getParameter("img"));
-        parqueFacadeLocal.edit(parque);
-        response.sendRedirect("configuracion/parque/ConfiguracionParques.jsp");
-    }
-//    
-
-    public void crearParque(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        Parque parque = new Parque();
-        parque.setParque(request.getParameter("nombreParque"));
-        Ubicacion ubicacion = new Ubicacion();
-        ubicacion.setIdUbicacion(Integer.valueOf(request.getParameter("idUbicacion")));
-        parque.setIdUbicacion(ubicacion);
-//        parque.setImg(request.getParameter("imagenParque"));
-        parqueFacadeLocal.create(parque);
-        response.sendRedirect("configuracion/parque/ConfiguracionParques.jsp");
-    }
-
-    public void crearHotel(HttpServletRequest request, HttpServletResponse response) throws IOException, Exception {
-        Hotel hotel = new Hotel();
-        hotel.setNombre(request.getParameter("nombreHotel"));
-        hotel.setNivel(Integer.valueOf(request.getParameter("nivelHotel")));
-        hotel.setDireccion(request.getParameter("direccion"));
-        hotel.setIdUbicacion(new Ubicacion(Integer.valueOf(request.getParameter("idUbicacion"))));
-        hotelFacadeLocal.create(hotel);
-        response.sendRedirect("configuracion/hotel/ConfiguracionHoteles.jsp");
-    }
-
-    public void modificarHotel(HttpServletRequest request, HttpServletResponse response) throws IOException, Exception {
-        Hotel hotel = hotelFacadeLocal.find(((Hotel) request.getAttribute("hotel")).getIdHotel());
-        request.getSession().removeAttribute("hotel");
-        hotel.setNombre(request.getParameter("nombre"));
-        hotel.setNivel(Integer.valueOf(request.getParameter("nivel")));
-        hotel.setDireccion(request.getParameter("direccion"));
-        hotelFacadeLocal.edit(hotel);
-        response.sendRedirect("configuracion/hotel/ConfiguracionHoteles.jsp");
-    }
-
     public void modificarPlan(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         Plan plan = planFacadeLocal.find(Integer.valueOf(request.getParameter("idPlan")));
         request.getSession().removeAttribute("plan");
@@ -238,44 +138,18 @@ public class Controlador {
         response.sendRedirect("configuracion/plan/configuracionPlanes.jsp");
     }
 
-    public void crearPlan(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    public void crearPlan() throws IOException, ServletException {
 
-        Plan plan = new Plan();
-        plan.setNombrePlan(request.getParameter("nombre"));
-        plan.setCosto(Integer.valueOf(request.getParameter("costo")));
-        plan.setDescripcion(request.getParameter("descripcion"));
-        plan.setDias(Integer.valueOf(request.getParameter("dias")));
-        plan.setNoches(Integer.valueOf(request.getParameter("noches")));
-        Parque parque = new Parque();
-        parque.setIdParque(Integer.valueOf(request.getParameter("idParque")));
-        plan.setIdParque(parque);
-        Hotel hotel = new Hotel();
-        hotel.setIdHotel(Integer.valueOf(request.getParameter("idHotel")));
-        plan.setIdHotel(hotel);
-        plan = planFacadeLocal.merge(plan);
-        InputStream inputStream = null;
-        Part filePart = request.getPart("photo");
-        if (filePart != null) {
-            inputStream = filePart.getInputStream();
-        }
-        Archivo archivo = null;
-        if (inputStream != null) {
-            archivo = new Archivo();
-            archivo.setNombre(filePart.getSubmittedFileName());
-            archivo.setImg(ConvertidorBlob.convertirInputStreamAByte(inputStream));
-            archivo.setIdPlan(plan);
-        }
-        archivoFacadeLocal.create(archivo);
-
-        response.sendRedirect("configuracion/plan/configuracionPlanes.jsp");
-    }
-
-    public void eliminarPlan(Integer id, HttpServletRequest request, HttpServletResponse response) throws IOException {
-        Plan plan = planFacadeLocal.find(id);
-        planFacadeLocal.remove(plan);
-        request.getSession().removeAttribute("idPlan");
-        request.getSession().removeAttribute("eliminarPlan");
-        response.sendRedirect("configuracion/plan/configuracionPlanes.jsp");
+      if(file != null){  
+        Archivo archivo = new Archivo();
+        archivo.setNombre(file.getName());
+        archivo.setImg(file.getName());
+        archivo = archivoFacadeLocal.merge(archivo);
+        planCurrent.setIdArchivo(archivo);
+        planFacadeLocal.create(planCurrent);
+        
+        FacesContext.getCurrentInstance().getExternalContext().redirect("configuracionPlanes.xhtml");
+      }
     }
 
     public void crearProveedor(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -295,27 +169,8 @@ public class Controlador {
         response.sendRedirect("configuracion/proveedor/configuracionProveedores.jsp");
     }
 
-    public void modificarProveedor(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        Usuario usuaProvee = usuarioFacadeLocal.find(((Usuario) request.getSession().getAttribute("proveedor")).getIdUsuario());
-        request.getSession().removeAttribute("proveedor");
-        usuaProvee.setUsuario(request.getParameter("usuario"));
-        usuaProvee.setEmpresa(request.getParameter("empresa"));
-        usuaProvee.setNombre(request.getParameter("nombre"));
-        usuaProvee.setTipoDocumento(Integer.valueOf(request.getParameter("tipoDocumento")));
-        usuaProvee.setNumeroDocumento(Integer.valueOf(request.getParameter("numDocumento")));
-        usuaProvee.setDireccion(request.getParameter("direccion"));
-        usuaProvee.setTelefono(request.getParameter("telefono"));
-        usuaProvee.setCorreo(request.getParameter("correo"));
-        usuarioFacadeLocal.edit(usuaProvee);
-        response.sendRedirect("configuracion/proveedor/configuracionProveedores.jsp");
-    }
-
-    private void eliminarProveedor(Integer idProveedor, HttpServletRequest request, HttpServletResponse response) throws IOException {
-        request.removeAttribute("idProveedor");
-        Usuario usuario = usuarioFacadeLocal.find(idProveedor);
+    private void eliminarProveedor(Usuario usuario) throws IOException {
         usuarioFacadeLocal.remove(usuario);
-
-        response.sendRedirect("configuracion/proveedor/configuracionProveedores.jsp");
     }
 
 //    private void crearPaquete(HttpServletRequest request, HttpServletResponse response) {
@@ -399,8 +254,95 @@ public class Controlador {
             ExternalContext ex = FacesContext.getCurrentInstance().getExternalContext();
             ex.redirect("../login.xhtml");
         } catch (Exception e) {
-            
+
         }
+    }
+
+    public void upload(FileUploadEvent event) {
+        try {
+            copyFile(event.getFile().getFileName(), event.getFile().getInputstream());
+            FacesMessage message = new FacesMessage("El archivo se ha subido con éxito!");
+            FacesContext.getCurrentInstance().addMessage(null, message);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void copyFile(String fileName, InputStream in) {
+        try {
+            file = new File(destination, fileName);
+            OutputStream out = new FileOutputStream(new File(destination + fileName));
+            int read = 0;
+            byte[] bytes = new byte[1024];
+            while ((read = in.read(bytes)) != -1) {
+                out.write(bytes, 0, read);
+            }
+            in.close();
+            out.flush();
+            out.close();
+//            System.out.println("El archivo se ha creado con éxito!");
+
+//            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH_mm_ss");
+//            Date date = new Date();
+//            String ruta1 = destination + fileName;
+//            String ruta2 = destination + dateFormat.format(date)+"-"+fileName;
+//            System.out.println("Archivo: "+ruta1+" Renombrado a: "+ruta2);           
+//            File archivo=new File(ruta1);
+//            archivo.renameTo(new File(ruta2));
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public SelectItem[] getComboParques() {
+
+        SelectItem[] items;
+        List<Parque> parques = parqueFacadeLocal.listarParques();
+
+        int size = true ? parques.size() + 1 : parques.size();
+        items = new SelectItem[size];
+        int i = 0;
+        if (true) {
+            items[0] = new SelectItem("", "-seleccione uno-");
+            i++;
+        }
+        for (Parque parque : parques) {
+            items[i++] = new SelectItem(parque.getIdParque(), parque.getParque());
+        }
+        return items;
+
+    }
+
+    public SelectItem[] getComboHoteles() {
+
+        SelectItem[] items;
+        List<Hotel> hoteles = hotelFacadeLocal.findAllHoteles();
+
+        int size = true ? hoteles.size() + 1 : hoteles.size();
+        items = new SelectItem[size];
+        int i = 0;
+        if (true) {
+            items[0] = new SelectItem("", "-seleccione uno-");
+            i++;
+        }
+        for (Hotel hotel : hoteles) {
+            items[i++] = new SelectItem(hotel.getIdHotel(), hotel.getNombre());
+        }
+        return items;
+
+    }
+
+    public List<Hotel> getListaHoteles() {
+        return hotelFacadeLocal.findAllHoteles();
+    }
+
+    public List<Parque> getListaParques() {
+        return parqueFacadeLocal.listarParques();
+    }
+
+    public List<Plan> getListaPlanes() {
+        return planFacadeLocal.findAll();
     }
 
     public UsuarioFacadeLocal getUsuarioFacadeLocal() {
@@ -413,10 +355,6 @@ public class Controlador {
 
     public List<Usuario> getListaClientesPendientes() {
         return usuarioFacadeLocal.findByRol(new Rol(RolEnum.CLIENTE.getValor()));
-    }
-
-    public void setListaClientesPendientes(List<Usuario> listaClientesPendientes) {
-        this.listaClientesPendientes = listaClientesPendientes;
     }
 
     public String getUsuario() {
@@ -433,6 +371,14 @@ public class Controlador {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Plan getPlanCurrent() {
+        return planCurrent;
+    }
+
+    public void setPlanCurrent(Plan planCurrent) {
+        this.planCurrent = planCurrent;
     }
 
 }

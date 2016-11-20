@@ -29,5 +29,7 @@ public interface ParqueFacadeLocal {
     List<Parque> findRange(int[] range);
 
     int count();
+
+    public List<Parque> listarParques();
     
 }

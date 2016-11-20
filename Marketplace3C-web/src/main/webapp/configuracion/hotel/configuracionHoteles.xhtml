@@ -25,14 +25,21 @@
                     <p:layoutUnit position="west" resizable="true" size="250" minSize="40" maxSize="400" >
                          <p:panelMenu style="width:300px">
                             <p:submenu label="Configuracion Clientes">
-                                <p:menuitem value="Configuracion clientes" actionListener="#{messagesUtil.configuracionClientes()}" icon="ui-icon-person" 
+                                <p:menuitem value="Configuracion clientes" 
+                                            actionListener="#{messagesUtil.configuracionClientes()}" 
+                                            icon="ui-icon-person" 
                                             url="cliente/configuracionClientes.xhtml"/>
                             </p:submenu> 
                             <p:submenu label="Configuracion Parques">
-                                <p:menuitem value="Crear parque" actionListener="#{menuView.delete}"  ajax="false" icon="ui-icon-flag"/>
+                                <p:menuitem value="Consultar Parques" 
+                                            actionListener="#{messagesUtil.configuracionParques()}" 
+                                            url="../parque/configuracionParques.xhtml"
+                                            icon="ui-icon-flag" />
                             </p:submenu>
-                            <p:submenu label="Configuracion Planes" icon="ui-icon-note" >
-                                <p:menuitem value="Crear plan" />
+                            <p:submenu label="Configuracion Planes"  >
+                                <p:menuitem value="Consultar planes" 
+                                            icon="ui-icon-note"
+                                            url="../plan/configuracionPlanes.xhtml"/>
                             </p:submenu>
                             <p:submenu label="Configuracion Proveedores" icon="ui-icon-person" >
                                 <p:menuitem value="Crear Proveedor" />
@@ -40,58 +47,68 @@
                         </p:panelMenu>
                     </p:layoutUnit>
                     <p:layoutUnit position="center">
-                        <p:dataTable value="#{controlador.listaClientesPendientes}" 
-                                     id="dtCapacitaciones" 
+                        <p:dataTable value="#{controlador.listaHoteles}" 
+                                     id="dtHoteles" 
                                      paginator="true" 
                                      rows="5"
                                      paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                      emptyMessage="No se encontraron clientes"
                                      rowsPerPageTemplate="5,10,15" 
                                      styleClass="tablaRes"
-                                     var="cli" >
+                                     var="htl" >
 
                             <f:facet name="header">  
-                                Clientes pendientes por aceptacion
+                                Hoteles registrados en el sistema
                             </f:facet>
 
-                            <p:column headerText="Usuario" 
-                                      sortBy="#{cli.usuario}"
-                                      filterBy="#{cli.usuario}" 
+                            <p:column headerText="Nombre" 
+                                      sortBy="#{htl.nombre}"
+                                      filterBy="#{htl.nombre}" 
                                       filterMatchMode="contains">
-                                <h:outputText value="#{cli.usuario}" />
+                                <h:outputText value="#{htl.nombre}" />
                             </p:column>
 
-                            <p:column headerText="Nombre"
-                                      sortBy="#{cli.nombre}"
-                                      filterBy="#{cli.nombre}"
+                            <p:column headerText="Nivel"
+                                      sortBy="#{htl.nivel}"
+                                      filterBy="#{htl.nivel}"
                                       filterMatchMode="contains">
-                                <h:outputText value="#{cli.nombre}" />
+                                <h:outputText value="#{htl.nivel}" />
                             </p:column>
 
-                            <p:column headerText="N° de documento"
-                                      sortBy="#{cli.numeroDocumento}"
-                                      filterBy="#{cli.numeroDocumento}" 
+                            <p:column headerText="Direccion"
+                                      sortBy="#{htl.direccion}"
+                                      filterBy="#{htl.direccion}" 
                                       filterMatchMode="contains">
-                                <h:outputText value="#{cli.numeroDocumento}" />
+                                <h:outputText value="#{htl.direccion}" />
                             </p:column>
 
-                            <p:column headerText="Correo"
-                                      sortBy="#{cli.correo}"
-                                      filterBy="#{cli.correo}" 
+                            <p:column headerText="Ubicacion"
+                                      sortBy="#{htl.idUbicacion.ciudad}"
+                                      filterBy="#{htl.idUbicacion.ciudad}" 
                                       filterMatchMode="contains">
-                                <h:outputText value="#{cli.correo}" />
+                                <h:outputText value="#{htl.idUbicacion.ciudad}" />
                             </p:column>
 
-                            <!-- Aceptar cliente -->
+                            <!-- Editar hotel -->
                             <p:column style="font-size:11px; font-weight: bold">
                                 <div align ="center">
                                     <p:commandLink>
-                                        <p:ajax listener="#{controlador.registroParcialCliente(cli)}" update=":formClientes" process="@form" />
-                                        <p:graphicImage id="imgEdit" value="../../img/ok.jpg"/>
+                                        <p:ajax update=":formHoteles" process="@form" />
+                                        <p:graphicImage id="imgEdit" value="../../img/modificar.png"/>
+                                    </p:commandLink>
+                                </div>    
+                            </p:column>
+                            <!-- Eliminar hotel -->
+                            <p:column style="font-size:11px; font-weight: bold">
+                                <div align ="center">
+                                    <p:commandLink>
+                                        <p:ajax update=":formHoteles" process="@form" />
+                                        <p:graphicImage id="imgEdit" value="../../img/eliminar.png"/>
                                     </p:commandLink>
                                 </div>    
                             </p:column>
                         </p:dataTable>
+                        
                     </p:layoutUnit>
                 </p:layout>
             </h:form> 

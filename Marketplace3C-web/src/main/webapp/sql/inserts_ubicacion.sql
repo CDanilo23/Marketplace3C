@@ -6,4 +6,5 @@ INSERT INTO `marketplace`.`ubicacion` (`ID_UBICACION`, `CIUDAD`, `PAIS`) VALUES 
 INSERT INTO `marketplace`.`ubicacion` (`ID_UBICACION`, `CIUDAD`, `PAIS`) VALUES ('6', 'Mexico', 'Mexico');
 INSERT INTO `marketplace`.`ubicacion` (`ID_UBICACION`, `CIUDAD`, `PAIS`) VALUES ('7', 'Bolivia', 'Bolivia');
 INSERT INTO `marketplace`.`ubicacion` (`ID_UBICACION`, `CIUDAD`, `PAIS`) VALUES ('8', 'Meta', 'Colombia');
+INSERT INTO `marketplace`.`ubicacion` (`ID_UBICACION`, `CIUDAD`, `PAIS`) VALUES ('9', 'Cusco', 'Peru');
 

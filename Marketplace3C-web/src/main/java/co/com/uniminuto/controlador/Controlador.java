@@ -101,10 +101,10 @@ public class Controlador implements Serializable {
                         externalContext.redirect("faces/configuracion/indexConfig.xhtml");
                         break;
                     case 2:
-                        externalContext.redirect("Proveedor/InicioProvedor.jsp?idUser=" + listUser.get(0).getIdUsuario());
+                        externalContext.redirect("faces/Cliente/indexConfig.xhtml?idUser=" + listUser.get(0).getIdUsuario());
                         break;
                     case 3:
-                        externalContext.redirect("Cliente/InicioCliente.jsp");
+                        externalContext.redirect("faces/Cliente/indexCliente.xhtml");
                         break;
                     default:
                         externalContext.redirect("login.xhtml");

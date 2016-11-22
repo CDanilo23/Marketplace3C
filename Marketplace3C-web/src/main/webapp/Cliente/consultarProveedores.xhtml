@@ -37,39 +37,39 @@
                         </p:panelMenu>
                     </p:layoutUnit>
                     <p:layoutUnit position="center">
-                        <p:dataTable value="#{controlador.listaParques}" 
-                                     id="dtParques" 
+                        <p:dataTable value="#{controlador.listaProveedores}" 
+                                     id="dtProveedores" 
                                      paginator="true" 
                                      rows="5"
                                      paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                     emptyMessage="No se encontraron parques"
+                                     emptyMessage="No se encontraron proveedores"
                                      rowsPerPageTemplate="5,10,15" 
                                      styleClass="tablaRes"
-                                     var="parque" >
+                                     var="proveedores" >
 
                             <f:facet name="header">  
                                 Proveedores registrados en el sistema
                             </f:facet>
 
                             <p:column headerText="Id Proveedor" 
-                                      sortBy="#{parque.parque}"
-                                      filterBy="#{parque.parque}" 
+                                      sortBy="#{proveedores.idUsuario}"
+                                      filterBy="#{proveedores.idUsuario}" 
                                       filterMatchMode="contains">
-                                <h:outputText value="#{parque.parque}" />
+                                <h:outputText value="#{proveedores.idUsuario}" />
                             </p:column>
 
                             <p:column headerText="Nombre"
-                                      sortBy="#{parque.idUbicacion.ciudad}"
-                                      filterBy="#{parque.idUbicacion.ciudad}"
+                                      sortBy="#{proveedores.nombre}"
+                                      filterBy="#{proveedores.nombre}"
                                       filterMatchMode="contains">
-                                <h:outputText value="#{parque.idUbicacion.ciudad}" />
+                                <h:outputText value="#{proveedores.nombre}" />
                             </p:column>
 
                             <p:column headerText="Empresa"
-                                      sortBy="#{parque.idUbicacion.pais}"
-                                      filterBy="#{parque.idUbicacion.pais}" 
+                                      sortBy="#{proveedores.empresa}"
+                                      filterBy="#{proveedores.empresa}" 
                                       filterMatchMode="contains">
-                                <h:outputText value="#{parque.idUbicacion.pais}" />
+                                <h:outputText value="#{proveedores.empresa}" />
                             </p:column>
                         </p:dataTable>                        
                     </p:layoutUnit>

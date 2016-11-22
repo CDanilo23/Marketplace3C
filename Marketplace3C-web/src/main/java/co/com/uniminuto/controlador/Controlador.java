@@ -93,7 +93,7 @@ public class Controlador implements Serializable {
     public void login() {
         try {
             ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
-            List<Usuario> listUser = usuarioFacadeLocal.findUserByIdAndPass(usuario, password);
+            List<Usuario> listUser = usuarioFacadeLocal.findUserByIdAndPass(usuario, password);            
             if (!listUser.isEmpty()) {
 
                 switch (listUser.get(0).getRol().getIdRol()) {
@@ -343,6 +343,10 @@ public class Controlador implements Serializable {
 
     public List<Plan> getListaPlanes() {
         return planFacadeLocal.findAll();
+    }
+    
+    public List<Usuario> getListaProveedores(){
+        return usuarioFacadeLocal.findByRol(new Rol(RolEnum.PROVEEDOR.getValor()));
     }
 
     public UsuarioFacadeLocal getUsuarioFacadeLocal() {

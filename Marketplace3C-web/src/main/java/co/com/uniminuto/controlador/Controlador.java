@@ -31,6 +31,7 @@ import java.io.Serializable;
 import java.security.GeneralSecurityException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -119,7 +120,7 @@ public class Controlador implements Serializable {
     public void login() {
         try {
             ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
-            List<Usuario> listUser = usuarioFacadeLocal.findUserByIdAndPass(usuario, password);
+            List<Usuario> listUser = usuarioFacadeLocal.findUserByIdAndPass(usuario, password);            
             if (!listUser.isEmpty()) {
 
                 switch (listUser.get(0).getRol().getIdRol()) {
@@ -127,10 +128,10 @@ public class Controlador implements Serializable {
                         externalContext.redirect("faces/configuracion/indexConfig.xhtml");
                         break;
                     case 2:
-                        externalContext.redirect("Proveedor/InicioProvedor.jsp?idUser=" + listUser.get(0).getIdUsuario());
+                        externalContext.redirect("faces/Cliente/indexConfig.xhtml?idUser=" + listUser.get(0).getIdUsuario());
                         break;
                     case 3:
-                        externalContext.redirect("Cliente/InicioCliente.jsp");
+                        externalContext.redirect("faces/Cliente/indexCliente.xhtml");
                         break;
                     default:
                         externalContext.redirect("login.xhtml");
@@ -365,6 +366,11 @@ public class Controlador implements Serializable {
         return items;
 
     }
+    
+    public void obtenerDetallesProveedor(Integer idUsuario){
+        List<Usuario> lu = new ArrayList<>();
+        lu = usuarioFacadeLocal.findUserByIdUsuario(idUsuario);
+    }
 
     public List<Hotel> getListaHoteles() {
         return hotelFacadeLocal.findAllHoteles();
@@ -376,6 +382,10 @@ public class Controlador implements Serializable {
 
     public List<Plan> getListaPlanes() {
         return planFacadeLocal.findAll();
+    }
+    
+    public List<Usuario> getListaProveedores(){
+        return usuarioFacadeLocal.findByRol(new Rol(RolEnum.PROVEEDOR.getValor()));
     }
 
     public UsuarioFacadeLocal getUsuarioFacadeLocal() {

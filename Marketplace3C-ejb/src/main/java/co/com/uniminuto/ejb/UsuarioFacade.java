@@ -65,7 +65,24 @@ public class UsuarioFacade extends AbstractFacade<Usuario> implements UsuarioFac
 
     @Override
     public List<Usuario> findByRol(Rol rol) {
-        return em.createNamedQuery("Usuario.findByRol").setParameter("rol", rol).getResultList();
+        List<Usuario> lu = new ArrayList<>();
+        try{
+            lu = em.createNamedQuery("Usuario.findByRol").setParameter("rol", rol).getResultList();
+        }catch(Exception e){
+            e.getCause();
+        }
+        return lu;
+    }
+    
+    @Override
+    public List<Usuario> findUserByIdUsuario(Integer idUsuario){
+        List<Usuario> lu = new ArrayList<>();
+        try{
+            lu = em.createNamedQuery("Usuario.findByIdUsuario").setParameter("idUsuario", idUsuario).getResultList();
+        }catch(Exception e){
+            e.getCause();
+        }
+        return lu;
     }
 
 }

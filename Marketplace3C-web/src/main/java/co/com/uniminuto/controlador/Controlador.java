@@ -47,6 +47,7 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 import org.primefaces.event.FileUploadEvent;
 
@@ -64,6 +65,11 @@ public class Controlador implements Serializable {
     private Plan planCurrent;
     private Hotel hotelCurrent;
     private Parque parqueCurrent;
+    private Usuario usuarioCurrent;
+    private boolean flagModificarPlan;
+    private boolean flagCrearPlan;
+    private boolean flagCrearProveedor;
+    private boolean flagModificarProveedor;
     private String destination = "C:\\Users\\pc\\Documents\\NetBeansProjects\\Marketplace2Corte\\Marketplace2Corte\\Marketplace3C-web\\src\\main\\webapp\\img\\";
     private File file;
 
@@ -83,11 +89,31 @@ public class Controlador implements Serializable {
     protected HotelFacadeLocal hotelFacadeLocal;
 
     public Controlador() {
-        this.planCurrent = new Plan();
-        this.hotelCurrent = new Hotel();
-        this.parqueCurrent = new Parque();
-        this.planCurrent.setIdHotel(hotelCurrent);
-        this.planCurrent.setIdParque(parqueCurrent);
+        HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
+        if (session.getAttribute("edicionPlan") == null) {
+            this.flagCrearPlan = true;
+            this.flagModificarPlan = false;
+            this.planCurrent = new Plan();
+            this.hotelCurrent = new Hotel();
+            this.parqueCurrent = new Parque();
+            this.planCurrent.setIdHotel(hotelCurrent);
+            this.planCurrent.setIdParque(parqueCurrent);
+        } else {
+            this.planCurrent = (Plan) session.getAttribute("edicionPlan");
+            this.flagCrearPlan = false;
+            this.flagModificarPlan = true;
+            session.removeAttribute("edicionPlan");
+        }
+        if(session.getAttribute("edicionUsuario") == null){
+            this.flagCrearProveedor = true;
+            this.flagModificarPlan = false;
+            this.usuarioCurrent = new Usuario();
+        }else{
+            this.usuarioCurrent = (Usuario) session.getAttribute("edicionUsuario");
+            this.flagCrearPlan = false;
+            this.flagModificarProveedor = true;
+            session.removeAttribute("edicionUsuario");
+        }
     }
 
     public void login() {
@@ -120,53 +146,69 @@ public class Controlador implements Serializable {
         }
     }
 
-    public void modificarPlan(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        Plan plan = planFacadeLocal.find(Integer.valueOf(request.getParameter("idPlan")));
-        request.getSession().removeAttribute("plan");
-        plan.setNombrePlan(request.getParameter("nombre"));
-        plan.setCosto(Integer.valueOf(request.getParameter("costo")));
-        plan.setDescripcion(request.getParameter("descripcion"));
-        plan.setDias(Integer.valueOf(request.getParameter("dias")));
-        plan.setNoches(Integer.valueOf(request.getParameter("noches")));
-        Parque parque = new Parque();
-        parque.setIdParque(Integer.valueOf(request.getParameter("idParque")));
-        plan.setIdParque(parque);
-        Hotel hotel = new Hotel();
-        hotel.setIdHotel(Integer.valueOf(request.getParameter("idHotel")));
-        plan.setIdHotel(hotel);
-        planFacadeLocal.merge(plan);
-        response.sendRedirect("configuracion/plan/configuracionPlanes.jsp");
+    public void prepararModificacionPlan(Plan planParam) throws IOException {
+        HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
+        session.setAttribute("edicionPlan", planParam);
+        this.flagModificarPlan = true;
+        this.flagCrearPlan = false;
+        FacesContext.getCurrentInstance().getExternalContext().redirect("crearPlan.xhtml");
+    }
+
+    public void modificarPlan() throws IOException {
+        this.flagCrearPlan = true;
+        this.flagModificarPlan = false;
+        planFacadeLocal.edit(this.planCurrent);
+        FacesContext.getCurrentInstance().getExternalContext().redirect("configuracionPlanes.xhtml");
+    }
+    
+    public void prepararModificacionProveedor(Usuario usuarioParam) throws IOException{
+        HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
+        session.setAttribute("edicionUsuario", usuarioParam);
+        this.flagCrearProveedor = false;
+        this.flagModificarProveedor = true;
+        FacesContext.getCurrentInstance().getExternalContext().redirect("crearProveedor.xhtml");
+    }
+    
+    public void modificarProveedor()throws IOException{
+        this.flagModificarProveedor = false;
+        this.flagCrearProveedor = true;
+        this.usuarioFacadeLocal.edit(this.usuarioCurrent);
+        FacesContext.getCurrentInstance().getExternalContext().redirect("configuracionProveedores.xhtml");
+    }
+
+    public void eliminarPlan(Plan planParam) {
+        planFacadeLocal.remove(planParam);
     }
 
     public void crearPlan() throws IOException, ServletException {
 
-      if(file != null){  
-        Archivo archivo = new Archivo();
-        archivo.setNombre(file.getName());
-        archivo.setImg(file.getName());
-        archivo = archivoFacadeLocal.merge(archivo);
-        planCurrent.setIdArchivo(archivo);
-        planFacadeLocal.create(planCurrent);
-        
-        FacesContext.getCurrentInstance().getExternalContext().redirect("configuracionPlanes.xhtml");
-      }
+        if (file != null) {
+            Archivo archivo = new Archivo();
+            archivo.setNombre(file.getName());
+            archivo.setImg(file.getName());
+            archivo = archivoFacadeLocal.merge(archivo);
+            planCurrent.setIdArchivo(archivo);
+            planFacadeLocal.create(planCurrent);
+
+            FacesContext.getCurrentInstance().getExternalContext().redirect("configuracionPlanes.xhtml");
+        }
     }
 
-    public void crearProveedor(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        Usuario usuProve = new Usuario();
-        usuProve.setUsuario(request.getParameter("usuario"));
-        usuProve.setEmpresa(request.getParameter("empresa"));
-        usuProve.setNombre(request.getParameter("nombreProveedor"));
-        usuProve.setContrasena(request.getParameter("password"));
-        usuProve.setTipoDocumento(Integer.valueOf(request.getParameter("tipoDocumento")));
-        usuProve.setNumeroDocumento(Integer.valueOf(request.getParameter("numDocumento")));
-        usuProve.setDireccion(request.getParameter("direccion"));
-        usuProve.setTelefono(request.getParameter("telefono"));
-        usuProve.setCorreo(request.getParameter("correo"));
-        usuProve.setRol(new Rol(RolEnum.PROVEEDOR.getValor()));
-        usuProve.setEstado(EstadoEnum.ACTIVO.getValor());
-        usuarioFacadeLocal.create(usuProve);
-        response.sendRedirect("configuracion/proveedor/configuracionProveedores.jsp");
+    public void crearProveedor() throws IOException {
+//        Usuario usuProve = new Usuario();
+//        usuProve.setUsuario(request.getParameter("usuario"));
+//        usuProve.setEmpresa(request.getParameter("empresa"));
+//        usuProve.setNombre(request.getParameter("nombreProveedor"));
+//        usuProve.setContrasena(request.getParameter("password"));
+//        usuProve.setTipoDocumento(Integer.valueOf(request.getParameter("tipoDocumento")));
+//        usuProve.setNumeroDocumento(Integer.valueOf(request.getParameter("numDocumento")));
+//        usuProve.setDireccion(request.getParameter("direccion"));
+//        usuProve.setTelefono(request.getParameter("telefono"));
+//        usuProve.setCorreo(request.getParameter("correo"));
+//        usuProve.setRol(new Rol(RolEnum.PROVEEDOR.getValor()));
+//        usuProve.setEstado(EstadoEnum.ACTIVO.getValor());
+//        usuarioFacadeLocal.create(usuProve);
+//        response.sendRedirect("configuracion/proveedor/configuracionProveedores.jsp");
     }
 
     private void eliminarProveedor(Usuario usuario) throws IOException {
@@ -281,15 +323,6 @@ public class Controlador implements Serializable {
             in.close();
             out.flush();
             out.close();
-//            System.out.println("El archivo se ha creado con éxito!");
-
-//            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH_mm_ss");
-//            Date date = new Date();
-//            String ruta1 = destination + fileName;
-//            String ruta2 = destination + dateFormat.format(date)+"-"+fileName;
-//            System.out.println("Archivo: "+ruta1+" Renombrado a: "+ruta2);           
-//            File archivo=new File(ruta1);
-//            archivo.renameTo(new File(ruta2));
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
@@ -379,6 +412,46 @@ public class Controlador implements Serializable {
 
     public void setPlanCurrent(Plan planCurrent) {
         this.planCurrent = planCurrent;
+    }
+
+    public boolean isFlagCrearPlan() {
+        return flagCrearPlan;
+    }
+
+    public void setFlagCrearPlan(boolean flagCrearPlan) {
+        this.flagCrearPlan = flagCrearPlan;
+    }
+
+    public boolean isFlagModificarPlan() {
+        return flagModificarPlan;
+    }
+
+    public void setFlagModificarPlan(boolean flagModificarPlan) {
+        this.flagModificarPlan = flagModificarPlan;
+    }
+
+    public boolean isFlagCrearProveedor() {
+        return flagCrearProveedor;
+    }
+
+    public void setFlagCrearProveedor(boolean flagCrearProveedor) {
+        this.flagCrearProveedor = flagCrearProveedor;
+    }
+
+    public boolean isFlagModificarProveedor() {
+        return flagModificarProveedor;
+    }
+
+    public void setFlagModificarProveedor(boolean flagModificarProveedor) {
+        this.flagModificarProveedor = flagModificarProveedor;
+    }
+
+    public Usuario getUsuarioCurrent() {
+        return usuarioCurrent;
+    }
+
+    public void setUsuarioCurrent(Usuario usuarioCurrent) {
+        this.usuarioCurrent = usuarioCurrent;
     }
 
 }

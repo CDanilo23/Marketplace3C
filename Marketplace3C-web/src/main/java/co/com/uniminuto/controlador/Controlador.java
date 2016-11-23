@@ -15,7 +15,6 @@ import co.com.uniminuto.entities.Hotel;
 import co.com.uniminuto.entities.Parque;
 import co.com.uniminuto.entities.Plan;
 import co.com.uniminuto.entities.Rol;
-import co.com.uniminuto.entities.Ubicacion;
 import co.com.uniminuto.entities.Usuario;
 import co.com.uniminuto.util.ControladorEnvioCorreo;
 import co.com.uniminuto.util.EstadoEnum;
@@ -29,14 +28,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.security.GeneralSecurityException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -49,7 +44,6 @@ import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.servlet.http.Part;
 import org.primefaces.event.FileUploadEvent;
 
 /**
@@ -196,23 +190,11 @@ public class Controlador implements Serializable {
     }
 
     public void crearProveedor() throws IOException {
-//        Usuario usuProve = new Usuario();
-//        usuProve.setUsuario(request.getParameter("usuario"));
-//        usuProve.setEmpresa(request.getParameter("empresa"));
-//        usuProve.setNombre(request.getParameter("nombreProveedor"));
-//        usuProve.setContrasena(request.getParameter("password"));
-//        usuProve.setTipoDocumento(Integer.valueOf(request.getParameter("tipoDocumento")));
-//        usuProve.setNumeroDocumento(Integer.valueOf(request.getParameter("numDocumento")));
-//        usuProve.setDireccion(request.getParameter("direccion"));
-//        usuProve.setTelefono(request.getParameter("telefono"));
-//        usuProve.setCorreo(request.getParameter("correo"));
-//        usuProve.setRol(new Rol(RolEnum.PROVEEDOR.getValor()));
-//        usuProve.setEstado(EstadoEnum.ACTIVO.getValor());
-//        usuarioFacadeLocal.create(usuProve);
-//        response.sendRedirect("configuracion/proveedor/configuracionProveedores.jsp");
+        usuarioFacadeLocal.create(this.usuarioCurrent);
+        FacesContext.getCurrentInstance().getExternalContext().redirect("configuracionProveedores.xhtml");
     }
 
-    private void eliminarProveedor(Usuario usuario) throws IOException {
+    public void eliminarProveedor(Usuario usuario) throws IOException {
         usuarioFacadeLocal.remove(usuario);
     }
 
@@ -363,6 +345,18 @@ public class Controlador implements Serializable {
         for (Hotel hotel : hoteles) {
             items[i++] = new SelectItem(hotel.getIdHotel(), hotel.getNombre());
         }
+        return items;
+
+    }
+    
+    public SelectItem[] getComboTipoDocumento() {
+
+        SelectItem[] items = new SelectItem[5];
+        items[0] = new SelectItem("", "-seleccione uno-");
+        items[1] = new SelectItem(TipoDocumentoEnum.CEDULA.getValor(), TipoDocumentoEnum.CEDULA.getDescripcion());
+        items[2] = new SelectItem(TipoDocumentoEnum.TARJETA_DE_IDENTIDAD.getValor(), TipoDocumentoEnum.TARJETA_DE_IDENTIDAD.getDescripcion());
+        items[3] = new SelectItem(TipoDocumentoEnum.PASAPORTE.getValor(), TipoDocumentoEnum.PASAPORTE.getDescripcion());
+        items[4] = new SelectItem(TipoDocumentoEnum.NIT.getValor(), TipoDocumentoEnum.NIT.getDescripcion());
         return items;
 
     }

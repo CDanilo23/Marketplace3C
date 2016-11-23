@@ -49,9 +49,6 @@
                                             url="../plan/crearPlan.xhtml"/>
                             </p:submenu>
                             <p:submenu label="Configuracion Proveedores" >
-                                <p:menuitem value="Consultar proveedores" 
-                                            icon="ui-icon-person"
-                                            url="../proveedor/configuracionProveedores.xhtml"/>
                                 <p:menuitem value="Crear proveedor" 
                                             icon="ui-icon-person"
                                             url="../proveedor/crearProveedor.xhtml"/>
@@ -59,8 +56,8 @@
                         </p:panelMenu>
                     </p:layoutUnit>
                     <p:layoutUnit position="center">
-                        <p:dataTable value="#{controlador.listaPlanes}" 
-                                     id="dtPlanes" 
+                        <p:dataTable value="#{controlador.listaProveedores}" 
+                                     id="dtProveedores" 
                                      paginator="true" 
                                      rows="5"
                                      paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
@@ -73,59 +70,57 @@
                                 Proveedores registrados en el sistema
                             </f:facet>
 
-                            <p:column headerText="Nombre plan" 
-                                      sortBy="#{prov.nombrePlan}"
-                                      filterBy="#{prov.nombrePlan}" 
+                             <p:column headerText="Usuario" 
+                                       sortBy="#{prov.usuario}"
+                                      filterBy="#{prov.usuario}" 
                                       filterMatchMode="contains">
-                                <h:outputText value="#{prov.nombrePlan}" />
+                                <h:outputText value="#{prov.usuario}" />
                             </p:column>
 
-                            <p:column headerText="Descripcion" 
-                                      sortBy="#{plan.descripcion}"
-                                      filterBy="#{prov.descripcion}" 
+                            <p:column headerText="Empresa" 
+                                      sortBy="#{prov.empresa}"
+                                      filterBy="#{prov.empresa}" 
                                       filterMatchMode="contains">
-                                <h:outputText value="#{prov.descripcion}" />
+                                <h:outputText value="#{prov.empresa}" />
                             </p:column>
 
-                            <p:column headerText="Costo" 
-                                      sortBy="#{prov.costo}"
-                                      filterBy="#{prov.costo}" 
+                            <p:column headerText="Nombre proveedor" 
+                                      sortBy="#{prov.nombre}"
+                                      filterBy="#{prov.nombre}" 
                                       filterMatchMode="contains">
-                                <h:outputText value="#{prov.costo}" />
+                                <h:outputText value="#{prov.nombre}" />
+                            </p:column>
+                            <p:column headerText="Numero de documento" 
+                                      sortBy="#{prov.numeroDocumento}"
+                                      filterBy="#{prov.numeroDocumento}" 
+                                      filterMatchMode="contains">
+                                <h:outputText value="#{prov.numeroDocumento}" />
                             </p:column>
 
-                            <p:column headerText="Dias" 
-                                      sortBy="#{prov.dias}"
-                                      filterBy="#{prov.dias}" 
+                            <p:column headerText="Direccion" 
+                                      sortBy="#{prov.direccion}"
+                                      filterBy="#{prov.direccion}" 
                                       filterMatchMode="contains">
-                                <h:outputText value="#{prov.dias}" />
+                                <h:outputText value="#{prov.direccion}" />
                             </p:column>
 
-                            <p:column headerText="Noches" 
-                                      sortBy="#{prov.noches}"
-                                      filterBy="#{prov.noches}" 
+                            <p:column headerText="Telefono" 
+                                      sortBy="#{prov.telefono}"
+                                      filterBy="#{prov.telefono}" 
                                       filterMatchMode="contains">
-                                <h:outputText value="#{prov.noches}" />
+                                <h:outputText value="#{prov.telefono}" />
                             </p:column>
 
-                            <p:column headerText="Parque" 
-                                      sortBy="#{prov.idParque.parque}"
-                                      filterBy="#{prov.idParque.parque}" 
+                            <p:column headerText="Email" 
+                                      sortBy="#{prov.correo}"
+                                      filterBy="#{prov.correo}" 
                                       filterMatchMode="contains">
-                                <h:outputText value="#{prov.idParque.parque}" />
-                            </p:column>
-
-                            <p:column headerText="Hotel" 
-                                      sortBy="#{prov.idHotel.nombre}"
-                                      filterBy="#{prov.idHotel.nombre}" 
-                                      filterMatchMode="contains">
-                                <h:outputText value="#{prov.idHotel.nombre}" />
+                                <h:outputText value="#{prov.correo}" />
                             </p:column>
 
                             <p:column headerText="Editar" style="font-size:11px; font-weight: bold" width="40" >
                                 <!--Editar-->                             
-                                <p:commandLink >
-                                    <p:ajax listener="#{controlador.prepararModificacionProveedor(prov)}" update="@form" immediate="true"/>
+                                <p:commandLink actionListener="#{controlador.prepararModificacionProveedor(prov)}" update="@form" immediate="true">
                                     <div align='center'>
                                         <p:graphicImage id="imgEdit" value="../../img/modificar.png"  />
                                     </div>
@@ -133,7 +128,7 @@
                             </p:column>
                             <!--Eliminar-->                          
                             <p:column headerText="Eliminar" style="font-size:11px; font-weight: bold" width="40" >
-                                <p:commandLink action="#{controlador.eliminarProveedor(prov)}" onclick="if (!confirm('Esta seguro que desea eliminar este registro?'))
+                                <p:commandLink action="#{controlador.eliminarProveedor(rov)}" onclick="if (!confirm('Esta seguro que desea eliminar este registro?'))
                                             return false;" ajax="false" immediate="true" process="@form">
                                     <div align='center'>
                                         <p:graphicImage id="imgElim" value="../../img/eliminar.png"  />

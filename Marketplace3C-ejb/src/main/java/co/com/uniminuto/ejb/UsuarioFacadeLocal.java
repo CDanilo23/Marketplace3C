@@ -34,5 +34,7 @@ public interface UsuarioFacadeLocal {
     List<Usuario> findUserByUserAndName(String user, String name);
 
     public List<Usuario> findByRol(Rol rol);
+    
+    public List<Usuario> findUserByIdUsuario(Integer idUsuario);
 
 }

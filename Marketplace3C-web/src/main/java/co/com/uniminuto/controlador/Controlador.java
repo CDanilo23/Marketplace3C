@@ -31,6 +31,7 @@ import java.io.Serializable;
 import java.security.GeneralSecurityException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -331,6 +332,11 @@ public class Controlador implements Serializable {
         }
         return items;
 
+    }
+    
+    public void obtenerDetallesProveedor(Integer idUsuario){
+        List<Usuario> lu = new ArrayList<>();
+        lu = usuarioFacadeLocal.findUserByIdUsuario(idUsuario);
     }
 
     public List<Hotel> getListaHoteles() {

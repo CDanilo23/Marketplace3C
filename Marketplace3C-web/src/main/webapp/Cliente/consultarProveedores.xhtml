@@ -71,6 +71,13 @@
                                       filterMatchMode="contains">
                                 <h:outputText value="#{proveedores.empresa}" />
                             </p:column>
+                            
+                            <p:column headerText="Mas Detalles"
+                                      filterMatchMode="contains">
+                                <div align ="center">
+                                    <p:commandLink value="Ver mas Detalles" action="#{controlador.obtenerDetallesProveedor(proveedores.idUsuario)}"/>                                                                         
+                                </div>    
+                            </p:column>
                         </p:dataTable>                        
                     </p:layoutUnit>
                 </p:layout>

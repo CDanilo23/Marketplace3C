@@ -73,5 +73,16 @@ public class UsuarioFacade extends AbstractFacade<Usuario> implements UsuarioFac
         }
         return lu;
     }
+    
+    @Override
+    public List<Usuario> findUserByIdUsuario(Integer idUsuario){
+        List<Usuario> lu = new ArrayList<>();
+        try{
+            lu = em.createNamedQuery("Usuario.findByIdUsuario").setParameter("idUsuario", idUsuario).getResultList();
+        }catch(Exception e){
+            e.getCause();
+        }
+        return lu;
+    }
 
 }

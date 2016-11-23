@@ -37,55 +37,32 @@
                         </p:panelMenu>
                     </p:layoutUnit>
                     <p:layoutUnit position="center">
-                        <p:dataTable id="dtProveedores"
-                                     value="#{controlador.listaProveedores}"
+                        <p:dataTable value="#{controlador.listaProveedores}" 
+                                     id="dtProveedores" 
+                                     paginator="true" 
                                      rows="5"
                                      paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                     emptyMessage="No se encontraron detalles">
+                                     emptyMessage="No se encontraron proveedores"
+                                     rowsPerPageTemplate="5,10,15" 
+                                     styleClass="tablaRes"
+                                     var="proveedores" >
 
                             <f:facet name="header">  
-                                Información Detallada Del Proveedor
-                            </f:facet>
-
-                            <p:column  
-                                headerText="Nombre" 
-                                      sortBy="#{controlador.nombre}"
-                                      filterBy="#{controlador.nombre}" 
-                                      filterMatchMode="contains">
-                                <h:outputText value="#{controlador.nombre}" />
-                            </p:column>
-
+                                Proveedores registrados en el sistema
+                            </f:facet>                           
                             <p:column headerText="Empresa"
-                                      sortBy="#{controlador.empresa}"
-                                      filterBy="#{controlador.empresa}"
+                                      sortBy="#{proveedores.empresa}"
+                                      filterBy="#{proveedores.empresa}" 
                                       filterMatchMode="contains">
-                                <h:outputText value="#{controlador.empresa}" />
+                                <h:outputText value="#{proveedores.empresa}" />
                             </p:column>
-
-                            <p:column headerText="Número De Documento"
-                                      sortBy="#{controlador.documento}"
-                                      filterBy="#{controlador.documento}" 
+                            
+                            <p:column headerText="Ver Planes Que Ofrece"
                                       filterMatchMode="contains">
-                                <h:outputText value="#{controlador.documento}" />
-                            </p:column>                                                        
-                            <p:column headerText="Dirección"
-                                      sortBy="#{controlador.direccion}"
-                                      filterBy="#{controlador.direccion}" 
-                                      filterMatchMode="contains">
-                                <h:outputText value="#{controlador.direccion}" />
-                            </p:column>                                                        
-                            <p:column headerText="Correo"
-                                      sortBy="#{controlador.correo}"
-                                      filterBy="#{controlador.correo}" 
-                                      filterMatchMode="contains">
-                                <h:outputText value="#{controlador.correo}" />
-                            </p:column>                                                        
-                            <p:column headerText="Telefono"
-                                      sortBy="#{controlador.telefono}"
-                                      filterBy="#{controlador.telefono}" 
-                                      filterMatchMode="contains">
-                                <h:outputText value="#{controlador.telefono}" />
-                            </p:column>                                                        
+                                <div align ="center">
+                                    <p:commandLink value="Ver Planes" action="#{controlador.obtenerDetallesProveedor(proveedores.idUsuario)}"/>                                                                         
+                                </div>    
+                            </p:column>
                         </p:dataTable>                        
                     </p:layoutUnit>
                 </p:layout>

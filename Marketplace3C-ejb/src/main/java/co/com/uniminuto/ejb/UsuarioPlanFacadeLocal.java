@@ -6,11 +6,14 @@
 package co.com.uniminuto.ejb;
 
 import co.com.uniminuto.entities.UsuarioPlan;
+import java.util.List;
+import javax.ejb.Local;
 
 /**
  *
  * @author Cristian
  */
+@Local
 public interface UsuarioPlanFacadeLocal {
     
     void create(UsuarioPlan usuarioPlan);
@@ -20,5 +23,7 @@ public interface UsuarioPlanFacadeLocal {
     UsuarioPlan merge(UsuarioPlan usuarioPlan);
 
     void remove(UsuarioPlan usuarioPlan);
+    
+    List<UsuarioPlan> findByIdUsuario(Integer idUsuario);
     
 }

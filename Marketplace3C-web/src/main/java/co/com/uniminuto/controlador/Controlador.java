@@ -10,12 +10,14 @@ import co.com.uniminuto.ejb.HotelFacadeLocal;
 import co.com.uniminuto.ejb.ParqueFacadeLocal;
 import co.com.uniminuto.ejb.PlanFacadeLocal;
 import co.com.uniminuto.ejb.UsuarioFacadeLocal;
+import co.com.uniminuto.ejb.UsuarioPlanFacadeLocal;
 import co.com.uniminuto.entities.Archivo;
 import co.com.uniminuto.entities.Hotel;
 import co.com.uniminuto.entities.Parque;
 import co.com.uniminuto.entities.Plan;
 import co.com.uniminuto.entities.Rol;
 import co.com.uniminuto.entities.Usuario;
+import co.com.uniminuto.entities.UsuarioPlan;
 import co.com.uniminuto.util.ControladorEnvioCorreo;
 import co.com.uniminuto.util.EstadoEnum;
 import co.com.uniminuto.util.GeneradorMD5;
@@ -70,6 +72,9 @@ public class Controlador implements Serializable {
 
     @EJB(mappedName = "UsuarioFacadeBean", lookup = "java:app/Marketplace3C-ejb-1.0-SNAPSHOT/UsuarioFacade!co.com.uniminuto.ejb.UsuarioFacadeLocal")
     private UsuarioFacadeLocal usuarioFacadeLocal;
+    
+    @EJB(mappedName = "UsuarioPlanFacadeBean", lookup = "java:app/Marketplace3C-ejb-1.0-SNAPSHOT/UsuarioPlanFacade!co.com.uniminuto.ejb.UsuarioPlanFacadeLocal")
+    private UsuarioPlanFacadeLocal usuarioPlanFacadeLocal;
 
     @EJB(mappedName = "ParqueFacadeBean", lookup = "java:app/Marketplace3C-ejb-1.0-SNAPSHOT/ParqueFacade!co.com.uniminuto.ejb.ParqueFacadeLocal")
     protected ParqueFacadeLocal parqueFacadeLocal;
@@ -375,6 +380,12 @@ public class Controlador implements Serializable {
         context.getExternalContext().redirect("../Cliente/detalleProveedor.xhtml");               
     }
     
+    public void obtenerUsuarioPlan(Integer idUsuario){
+        List<UsuarioPlan> lu = new ArrayList<>();
+        System.out.println(idUsuario);
+        lu = usuarioPlanFacadeLocal.findByIdUsuario(idUsuario);
+        System.out.println(lu.get(0).getIdPlan());
+    }
     public String getNombre() {
         FacesContext contex = FacesContext.getCurrentInstance();
         String nombre = (String.valueOf(contex.getExternalContext().getSessionMap().get("nombre")));

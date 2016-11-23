@@ -14,16 +14,16 @@
         <h:body>
             <h:form id="formPlanes" enctype="multipart/form-data">
                 <p:menubar>
-                        <f:facet name="options">
-                            <p:commandButton type="button" value="Logout" icon="ui-icon-extlink">
-                                <p:ajax listener="#{controlador.salir()}"/>
-                            </p:commandButton>
-                        </f:facet>
+                    <f:facet name="options">
+                        <p:commandButton type="button" value="Logout" icon="ui-icon-extlink">
+                            <p:ajax listener="#{controlador.salir()}"/>
+                        </p:commandButton>
+                    </f:facet>
                 </p:menubar>
 
                 <p:layout id="layoutPadre" style="min-width:400px;min-height:700px;" >
                     <p:layoutUnit position="west" resizable="true" size="250" minSize="40" maxSize="400" >
-                         <p:panelMenu style="width:300px">
+                        <p:panelMenu style="width:300px">
                             <p:submenu label="Clientes">
                                 <p:menuitem value="Configuracion clientes" 
                                             icon="ui-icon-person" 
@@ -38,11 +38,11 @@
                                 <p:menuitem value="Consultar Parques" 
                                             icon="ui-icon-flag" 
                                             url="../parque/configuracionParques.xhtml"/>
-                                
+
                             </p:submenu>
                             <p:submenu label="Planes">
                                 <p:menuitem value="Crear Plan" 
-                                            icon="ui-icon-flag" 
+                                            icon="ui-icon-note" 
                                             url="../plan/crearPlan.xhtml"/>
                             </p:submenu>
                             <p:submenu label="Configuracion Proveedores" icon="ui-icon-person" >
@@ -62,65 +62,85 @@
                                      var="plan" >
 
                             <f:facet name="header">  
-                                Parques registrados en el sistema
+                                Planes registrados en el sistema
                             </f:facet>
-                            
+
                             <p:column headerText="Nombre plan" 
                                       sortBy="#{plan.nombrePlan}"
                                       filterBy="#{plan.nombrePlan}" 
                                       filterMatchMode="contains">
                                 <h:outputText value="#{plan.nombrePlan}" />
                             </p:column>
-                            
+
                             <p:column headerText="Descripcion" 
                                       sortBy="#{plan.descripcion}"
                                       filterBy="#{plan.descripcion}" 
                                       filterMatchMode="contains">
                                 <h:outputText value="#{plan.descripcion}" />
                             </p:column>
-                            
+
                             <p:column headerText="Costo" 
                                       sortBy="#{plan.costo}"
                                       filterBy="#{plan.costo}" 
                                       filterMatchMode="contains">
                                 <h:outputText value="#{plan.costo}" />
                             </p:column>
-                            
+
                             <p:column headerText="Dias" 
                                       sortBy="#{plan.dias}"
                                       filterBy="#{plan.dias}" 
                                       filterMatchMode="contains">
                                 <h:outputText value="#{plan.dias}" />
                             </p:column>
-                            
+
                             <p:column headerText="Noches" 
                                       sortBy="#{plan.noches}"
                                       filterBy="#{plan.noches}" 
                                       filterMatchMode="contains">
                                 <h:outputText value="#{plan.noches}" />
                             </p:column>
-                            
+
                             <p:column headerText="Parque" 
                                       sortBy="#{plan.idParque.parque}"
                                       filterBy="#{plan.idParque.parque}" 
                                       filterMatchMode="contains">
                                 <h:outputText value="#{plan.idParque.parque}" />
                             </p:column>
-                            
-                             <p:column headerText="Hotel" 
-                                       sortBy="#{plan.idHotel.nombre}"
-                                       filterBy="#{plan.idHotel.nombre}" 
+
+                            <p:column headerText="Hotel" 
+                                      sortBy="#{plan.idHotel.nombre}"
+                                      filterBy="#{plan.idHotel.nombre}" 
                                       filterMatchMode="contains">
-                                 <h:outputText value="#{plan.idHotel.nombre}" />
+                                <h:outputText value="#{plan.idHotel.nombre}" />
                             </p:column>
-                            
+
                             <p:column headerText="" width="160"> 
                                 <p:graphicImage value="../../img/#{plan.idArchivo.img}" />
                             </p:column>
 
-                           
+                            <p:column headerText="Editar" style="font-size:11px; font-weight: bold" width="40" >
+                                <!--Editar-->                             
+                                <p:commandLink >
+                                    <p:ajax listener="#{controlador.prepararModificacionPlan(plan)}" update="@form" immediate="true"/>
+                                    <div align='center'>
+                                        <p:graphicImage id="imgEdit" value="../../img/modificar.png"  />
+                                    </div>
+                                </p:commandLink>
+
+                            </p:column>
+
+                            <!--Eliminar-->                          
+                            <p:column headerText="Eliminar" style="font-size:11px; font-weight: bold" width="40" >
+                                <p:commandLink action="#{controlador.eliminarPlan(plan)}" onclick="if (!confirm('Esta seguro que desea eliminar este registro?'))
+                                            return false;" ajax="false" immediate="true" process="@form">
+                                    <div align='center'>
+                                        <p:graphicImage id="imgElim" value="../../img/eliminar.png"  />
+                                    </div>
+                                </p:commandLink>
+                            </p:column>
+
                         </p:dataTable>
-                        
+
                     </p:layoutUnit>
                 </p:layout>
             </h:form> 

@@ -98,7 +98,10 @@
                             </p:fileUpload>
                         </h:panelGrid>
                         <div align='center'>
-                            <p:commandButton value="Guardar" action="#{controlador.crearPlan()}"/>
+                            <p:commandButton value="Guardar" action="#{controlador.crearPlan()}" 
+                                             rendered="#{controlador.flagCrearPlan}"/>
+                            <p:commandButton value="Modificar" action="#{controlador.modificarPlan()}"
+                                             rendered="#{controlador.flagModificarPlan}"/>
                         </div>
                     </p:layoutUnit>
                 </p:layout>

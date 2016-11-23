@@ -361,9 +361,54 @@ public class Controlador implements Serializable {
 
     }
     
-    public void obtenerDetallesProveedor(Integer idUsuario){
+    public void obtenerDetallesProveedor(Integer idUsuario) throws IOException{
         List<Usuario> lu = new ArrayList<>();
         lu = usuarioFacadeLocal.findUserByIdUsuario(idUsuario);
+        
+        FacesContext context = FacesContext.getCurrentInstance();
+        context.getExternalContext().getSessionMap().put("nombre", lu.get(0).getNombre());
+        context.getExternalContext().getSessionMap().put("empresa", lu.get(0).getEmpresa());
+        context.getExternalContext().getSessionMap().put("numDoc", lu.get(0).getNumeroDocumento());
+        context.getExternalContext().getSessionMap().put("direccion", lu.get(0).getDireccion());
+        context.getExternalContext().getSessionMap().put("correo", lu.get(0).getCorreo());
+        context.getExternalContext().getSessionMap().put("telefono", lu.get(0).getTelefono());                       
+        context.getExternalContext().redirect("../Cliente/detalleProveedor.xhtml");               
+    }
+    
+    public String getNombre() {
+        FacesContext contex = FacesContext.getCurrentInstance();
+        String nombre = (String.valueOf(contex.getExternalContext().getSessionMap().get("nombre")));
+        return nombre;
+    }  
+
+    public String getEmpresa() {
+        FacesContext contex = FacesContext.getCurrentInstance();
+        String empresa = (String.valueOf(contex.getExternalContext().getSessionMap().get("empresa")));
+        return empresa;
+    }
+    
+    public String getDocumento() {
+        FacesContext contex = FacesContext.getCurrentInstance();
+        String documento = (String.valueOf(contex.getExternalContext().getSessionMap().get("numDoc")));
+        return documento;
+    }
+    
+    public String getDireccion() {
+        FacesContext contex = FacesContext.getCurrentInstance();
+        String direccion = (String.valueOf(contex.getExternalContext().getSessionMap().get("direccion")));
+        return direccion;
+    }
+    
+    public String getCorreo() {
+        FacesContext contex = FacesContext.getCurrentInstance();
+        String correo = (String.valueOf(contex.getExternalContext().getSessionMap().get("correo")));
+        return correo;
+    }
+    
+    public String getTelefono() {
+        FacesContext contex = FacesContext.getCurrentInstance();
+        String telefono = (String.valueOf(contex.getExternalContext().getSessionMap().get("telefono")));
+        return telefono;
     }
 
     public List<Hotel> getListaHoteles() {

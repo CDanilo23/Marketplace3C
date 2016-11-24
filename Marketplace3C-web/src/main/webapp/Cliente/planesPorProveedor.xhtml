@@ -43,10 +43,11 @@
                     </p:layoutUnit>               
                     <p:layoutUnit position="center">
                         <p:dataTable id="dtProveedores"
-                                     value="#{10}"
+                                     value="#{controlador.nombrePlan}"
                                      rows="5"
                                      paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                     emptyMessage="No se encontraron planes para el proveedor seleccionado">
+                                     emptyMessage="No se encontraron planes para el proveedor seleccionado"
+                                     var="plan">
 
                             <f:facet name="header">  
                                 Información Del Plan
@@ -54,10 +55,10 @@
 
                             <p:column  
                                 headerText="Nombre" 
-                                sortBy="#{controlador.nombrePlan}"
-                                filterBy="#{controlador.nombrePlan}" 
+                                sortBy="#{plan.nombrePlan}"
+                                filterBy="#{plan.nombrePlan}" 
                                       filterMatchMode="contains">
-                                <h:outputText value="#{controlador.nombrePlan}" />
+                                <h:outputText value="#{plan.nombrePlan}" />
                             </p:column>
 
                             <p:column headerText="Costo"

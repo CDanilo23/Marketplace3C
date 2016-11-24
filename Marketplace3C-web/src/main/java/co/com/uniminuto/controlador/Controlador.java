@@ -447,10 +447,11 @@ public class Controlador implements Serializable {
         }        
     }
     
-    public String getNombrePlan(){
+    public List<Plan> getNombrePlan(){
         FacesContext contex = FacesContext.getCurrentInstance();
-        String nombrePlan = (String.valueOf(contex.getExternalContext().getSessionMap().get("nombrePlan")));
-        return nombrePlan;
+        List<Plan> lp = new ArrayList<>();
+        lp = (List<Plan>) contex.getExternalContext().getSessionMap().get("nombrePlan");
+        return lp;
     }
     
     public String getCostoPlan(){

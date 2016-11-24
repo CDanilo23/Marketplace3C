@@ -106,7 +106,7 @@ public class Controlador implements Serializable {
         }
         if(session.getAttribute("edicionUsuario") == null){
             this.flagCrearProveedor = true;
-            this.flagModificarPlan = false;
+            this.flagModificarProveedor = false;
             this.usuarioCurrent = new Usuario();
         }else{
             this.usuarioCurrent = (Usuario) session.getAttribute("edicionUsuario");
@@ -119,7 +119,10 @@ public class Controlador implements Serializable {
     public void login() {
         try {
             ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
-            List<Usuario> listUser = usuarioFacadeLocal.findUserByIdAndPass(usuario, password);            
+            List<Usuario> listUser = usuarioFacadeLocal.findUserByIdAndPass(usuario, password);  
+            HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
+            session.setAttribute("IdUser", listUser.get(0).getIdUsuario());
+            
             if (!listUser.isEmpty()) {
 
                 switch (listUser.get(0).getRol().getIdRol()) {
@@ -127,7 +130,7 @@ public class Controlador implements Serializable {
                         externalContext.redirect("faces/configuracion/indexConfig.xhtml");
                         break;
                     case 2:
-                        externalContext.redirect("faces/Cliente/indexConfig.xhtml?idUser=" + listUser.get(0).getIdUsuario());
+                        externalContext.redirect("faces/Proveedor/indexPlan.xhtml");
                         break;
                     case 3:
                         externalContext.redirect("faces/Cliente/indexCliente.xhtml");
@@ -159,6 +162,13 @@ public class Controlador implements Serializable {
         this.flagModificarPlan = false;
         planFacadeLocal.edit(this.planCurrent);
         FacesContext.getCurrentInstance().getExternalContext().redirect("configuracionPlanes.xhtml");
+    }
+    
+    public void modificarPlanProveedor() throws IOException {
+        this.flagCrearPlan = true;
+        this.flagModificarPlan = false;
+        planFacadeLocal.edit(this.planCurrent);
+        FacesContext.getCurrentInstance().getExternalContext().redirect("consultarPlan.xhtml");
     }
     
     public void prepararModificacionProveedor(Usuario usuarioParam) throws IOException{
@@ -194,6 +204,29 @@ public class Controlador implements Serializable {
         }
     }
 
+    public void crearPlanIdUser() throws IOException, ServletException {
+        HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
+        Integer idUser = (Integer) session.getAttribute("IdUser");
+       
+        if (file != null) {
+            Archivo archivo = new Archivo();
+            Usuario u = new Usuario();
+            UsuarioPlan usuarioPlan = new UsuarioPlan();
+            archivo.setNombre(file.getName());
+            archivo.setImg(file.getName());
+            archivo = archivoFacadeLocal.merge(archivo);
+            planCurrent.setIdArchivo(archivo);
+            planCurrent = planFacadeLocal.merge(planCurrent);
+            u.setIdUsuario(idUser);
+            usuarioPlan.setIdUsuario(u);
+            usuarioPlan.setIdPlan(planCurrent);
+            
+            usuarioPlanFacadeLocal.merge(usuarioPlan);
+
+            FacesContext.getCurrentInstance().getExternalContext().redirect("consultarPlan.xhtml");
+        }
+    }
+    
     public void crearProveedor() throws IOException {
         usuarioFacadeLocal.create(this.usuarioCurrent);
         FacesContext.getCurrentInstance().getExternalContext().redirect("configuracionProveedores.xhtml");
@@ -432,6 +465,13 @@ public class Controlador implements Serializable {
 
     public List<Plan> getListaPlanes() {
         return planFacadeLocal.findAll();
+    }
+    
+    public List<Plan> getListaPlanesForIdUser() {
+        HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
+        Integer idUser = (Integer) session.getAttribute("IdUser");
+       
+        return usuarioPlanFacadeLocal.findPlan(idUser);
     }
     
     public List<Usuario> getListaProveedores(){

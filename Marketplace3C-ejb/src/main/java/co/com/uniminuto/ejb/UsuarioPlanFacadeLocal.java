@@ -5,6 +5,7 @@
  */
 package co.com.uniminuto.ejb;
 
+import co.com.uniminuto.entities.Plan;
 import co.com.uniminuto.entities.UsuarioPlan;
 import java.util.List;
 import javax.ejb.Local;
@@ -25,5 +26,7 @@ public interface UsuarioPlanFacadeLocal {
     void remove(UsuarioPlan usuarioPlan);
     
     List<UsuarioPlan> findByIdUsuario(Integer idUsuario);
+    
+     List<Plan> findPlan(int idUser);
     
 }

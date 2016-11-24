@@ -6,6 +6,7 @@
 package co.com.uniminuto.ejb;
 
 
+import co.com.uniminuto.entities.Plan;
 import co.com.uniminuto.entities.UsuarioPlan;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +35,7 @@ public class UsuarioPlanFacade extends AbstractFacade<UsuarioPlan> implements Us
 
     @Override
     public UsuarioPlan merge(UsuarioPlan usuarioPlan) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+         return em.merge(usuarioPlan);
     }
 
     @Override
@@ -44,6 +45,17 @@ public class UsuarioPlanFacade extends AbstractFacade<UsuarioPlan> implements Us
             lu = em.createNamedQuery("UsuarioPlan.findByIdUsuario").setParameter("idUsuario", idUsuario).getResultList();
         }catch(Exception e){
             e.getCause();
+        }
+        return lu;
+    }
+    
+    @Override
+    public List<Plan> findPlan(int idUser) {
+        List<Plan> lu = new ArrayList<>();
+        try {
+            lu = em.createNamedQuery("UsuarioPlan.findByPlan").setParameter("idUsuario",idUser).getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return lu;
     }

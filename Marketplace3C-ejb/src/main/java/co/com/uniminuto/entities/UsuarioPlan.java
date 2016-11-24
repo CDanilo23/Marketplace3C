@@ -29,6 +29,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "UsuarioPlan.findAll", query = "SELECT u FROM UsuarioPlan u"),
     @NamedQuery(name = "UsuarioPlan.findByIdUsuarioPlan", query = "SELECT u FROM UsuarioPlan u WHERE u.idUsuarioPlan = :idUsuarioPlan"),
+    @NamedQuery(name = "UsuarioPlan.findByPlan", query = "SELECT p FROM UsuarioPlan up INNER JOIN up.idPlan AS p INNER JOIN up.idUsuario AS u WHERE u.idUsuario = :idUsuario "),
     @NamedQuery(name = "UsuarioPlan.findByEstado", query = "SELECT u FROM UsuarioPlan u WHERE u.estado = :estado"),
     @NamedQuery(name = "UsuarioPlan.findByIdUsuario", query = "SELECT u FROM UsuarioPlan u WHERE u.idUsuario = :idUsuario")})
 

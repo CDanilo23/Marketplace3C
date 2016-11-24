@@ -67,6 +67,7 @@ public class Controlador implements Serializable {
     private boolean flagCrearPlan;
     private boolean flagCrearProveedor;
     private boolean flagModificarProveedor;
+    private List<Integer> flagCantPlanes = new ArrayList<>();
     private String destination = "C:\\Users\\pc\\Documents\\NetBeansProjects\\Marketplace2Corte\\Marketplace2Corte\\Marketplace3C-web\\src\\main\\webapp\\img\\";
     private File file;
 
@@ -413,12 +414,57 @@ public class Controlador implements Serializable {
         context.getExternalContext().redirect("../Cliente/detalleProveedor.xhtml");               
     }
     
-    public void obtenerUsuarioPlan(Integer idUsuario){
-        List<UsuarioPlan> lu = new ArrayList<>();
-        System.out.println(idUsuario);
-        lu = usuarioPlanFacadeLocal.findByIdUsuario(idUsuario);
-        System.out.println(lu.get(0).getIdPlan());
+    public void obtenerUsuarioPlan(Integer idUsuario) throws IOException{
+        List<Plan> lp = new ArrayList<>();
+                
+        FacesContext context = FacesContext.getCurrentInstance();
+        try{
+            lp = usuarioPlanFacadeLocal.findPlan(idUsuario);
+            System.out.println("NOMBRE DEL PLAN " + lp.get(0).getNombrePlan());
+            if(flagCantPlanes.isEmpty()){
+                System.out.println("ENTRO AL LLENAR EL ARREGLO");
+                for(int i=0;i < lp.size();i++){
+                    flagCantPlanes.add(i);
+                }
+            }else{
+                System.out.println("ENTRO AL REMOVE ALL");
+                lp.removeAll(lp);
+            }
+        
+            System.out.println("COSTO FLAG PLANES BUSCADOR" + flagCantPlanes.size());
+            context.getExternalContext().getSessionMap().put("nombrePlan", lp);
+            context.getExternalContext().getSessionMap().put("costo", lp.get(0).getCosto());
+            context.getExternalContext().getSessionMap().put("descripcion", lp.get(0).getDescripcion());
+            context.getExternalContext().getSessionMap().put("dias", lp.get(0).getDias());
+            context.getExternalContext().getSessionMap().put("noches", lp.get(0).getNoches());
+            context.getExternalContext().getSessionMap().put("parque", lp.get(0).getIdParque().getParque());                       
+            context.getExternalContext().getSessionMap().put("hotel", lp.get(0).getIdHotel().getNombre());
+            context.getExternalContext().redirect("../Cliente/planesPorProveedor.xhtml");                
+        }catch(Exception e){
+            e.getCause();
+            System.out.println("ENTRO A LA EXCEPCION");
+            context.getExternalContext().redirect("../Cliente/planesPorProveedorError.xhtml");                
+        }        
     }
+    
+    public String getNombrePlan(){
+        FacesContext contex = FacesContext.getCurrentInstance();
+        String nombrePlan = (String.valueOf(contex.getExternalContext().getSessionMap().get("nombrePlan")));
+        return nombrePlan;
+    }
+    
+    public String getCostoPlan(){
+        FacesContext contex = FacesContext.getCurrentInstance();
+        String costoPlan = (String.valueOf(contex.getExternalContext().getSessionMap().get("costo")));
+        return costoPlan;
+    }
+    
+    public String getDescripcion(){
+        FacesContext contex = FacesContext.getCurrentInstance();
+        String descripcionPlan = (String.valueOf(contex.getExternalContext().getSessionMap().get("descripcion")));
+        return descripcionPlan;
+    }
+    
     public String getNombre() {
         FacesContext contex = FacesContext.getCurrentInstance();
         String nombre = (String.valueOf(contex.getExternalContext().getSessionMap().get("nombre")));
@@ -453,6 +499,17 @@ public class Controlador implements Serializable {
         FacesContext contex = FacesContext.getCurrentInstance();
         String telefono = (String.valueOf(contex.getExternalContext().getSessionMap().get("telefono")));
         return telefono;
+    }
+    
+    public List<Integer> getObjetoCantPlanes(){         
+        System.out.println("OBJETO CNAT PLANES() " + flagCantPlanes.size());
+        return flagCantPlanes;
+    }
+    
+    public List<Integer> getObjeto(){
+        List<Integer> objeto = new ArrayList<>();
+        objeto.add(0);
+        return objeto;
     }
 
     public List<Hotel> getListaHoteles() {

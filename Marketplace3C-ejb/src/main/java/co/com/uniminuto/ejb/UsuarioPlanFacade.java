@@ -39,10 +39,10 @@ public class UsuarioPlanFacade extends AbstractFacade<UsuarioPlan> implements Us
     }
 
     @Override
-    public List<UsuarioPlan> findByIdUsuario(Integer idUsuario) {
+    public List<UsuarioPlan> findByUsuarioPlan(Integer idUsuario) {
         List<UsuarioPlan> lu = new ArrayList<>();
         try{
-            lu = em.createNamedQuery("UsuarioPlan.findByIdUsuario").setParameter("idUsuario", idUsuario).getResultList();
+            lu = em.createNamedQuery("UsuarioPlan.findByUsuarioPlan").setParameter("idUsuario", idUsuario).getResultList();
         }catch(Exception e){
             e.getCause();
         }

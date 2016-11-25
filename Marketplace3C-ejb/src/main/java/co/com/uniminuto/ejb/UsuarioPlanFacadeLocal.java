@@ -25,7 +25,7 @@ public interface UsuarioPlanFacadeLocal {
 
     void remove(UsuarioPlan usuarioPlan);
     
-    List<UsuarioPlan> findByIdUsuario(Integer idUsuario);
+    List<UsuarioPlan> findByUsuarioPlan(Integer idUsuario);
     
      List<Plan> findPlan(int idUser);
     

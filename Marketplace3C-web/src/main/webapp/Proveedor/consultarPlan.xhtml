@@ -50,62 +50,62 @@
                             </f:facet>
 
                             <p:column headerText="Nombre plan" 
-                                      sortBy="#{plan.nombrePlan}"
-                                      filterBy="#{plan.nombrePlan}" 
+                                      sortBy="#{plan.idPlan.nombrePlan}"
+                                      filterBy="#{plan.idPlan.nombrePlan}" 
                                       filterMatchMode="contains">
-                                <h:outputText value="#{plan.nombrePlan}" />
+                                <h:outputText value="#{plan.idPlan.nombrePlan}" />
                             </p:column>
 
                             <p:column headerText="Descripcion" 
-                                      sortBy="#{plan.descripcion}"
-                                      filterBy="#{plan.descripcion}" 
+                                      sortBy="#{plan.idPlan.descripcion}"
+                                      filterBy="#{plan.idPlan.descripcion}" 
                                       filterMatchMode="contains">
-                                <h:outputText value="#{plan.descripcion}" />
+                                <h:outputText value="#{plan.idPlan.descripcion}" />
                             </p:column>
 
                             <p:column headerText="Costo" 
-                                      sortBy="#{plan.costo}"
-                                      filterBy="#{plan.costo}" 
+                                      sortBy="#{plan.idPlan.costo}"
+                                      filterBy="#{plan.idPlan.costo}" 
                                       filterMatchMode="contains">
-                                <h:outputText value="#{plan.costo}" />
+                                <h:outputText value="#{plan.idPlan.costo}" />
                             </p:column>
 
                             <p:column headerText="Dias" 
-                                      sortBy="#{plan.dias}"
-                                      filterBy="#{plan.dias}" 
+                                      sortBy="#{plan.idPlan.dias}"
+                                      filterBy="#{plan.idPlan.dias}" 
                                       filterMatchMode="contains">
-                                <h:outputText value="#{plan.dias}" />
+                                <h:outputText value="#{plan.idPlan.dias}" />
                             </p:column>
 
                             <p:column headerText="Noches" 
-                                      sortBy="#{plan.noches}"
-                                      filterBy="#{plan.noches}" 
+                                      sortBy="#{plan.idPlan.noches}"
+                                      filterBy="#{plan.idPlan.noches}" 
                                       filterMatchMode="contains">
-                                <h:outputText value="#{plan.noches}" />
+                                <h:outputText value="#{plan.idPlan.noches}" />
                             </p:column>
 
                             <p:column headerText="Parque" 
-                                      sortBy="#{plan.idParque.parque}"
-                                      filterBy="#{plan.idParque.parque}" 
+                                      sortBy="#{plan.idPlan.idParque.parque}"
+                                      filterBy="#{plan.idPlan.idParque.parque}" 
                                       filterMatchMode="contains">
-                                <h:outputText value="#{plan.idParque.parque}" />
+                                <h:outputText value="#{plan.idPlan.idParque.parque}" />
                             </p:column>
 
                             <p:column headerText="Hotel" 
-                                      sortBy="#{ plan.nombrePlan}"
-                                      filterBy="#{plan.nombrePlan}" 
+                                      sortBy="#{ plan.idPlan.nombrePlan}"
+                                      filterBy="#{plan.idPlan.nombrePlan}" 
                                       filterMatchMode="contains">
-                                <h:outputText value="#{plan.idHotel.nombre}" />
+                                <h:outputText value="#{plan.idPlan.idHotel.nombre}" />
                             </p:column>
 
                             <p:column headerText="" width="160"> 
-                                <p:graphicImage value="../../img/#{plan.idArchivo.img}" />
+                                <p:graphicImage value="../../img/#{plan.idPlan.idArchivo.img}" />
                             </p:column>
 
                             <p:column headerText="Editar" style="font-size:11px; font-weight: bold" width="40" >
                                 <!--Editar-->                             
                                 <p:commandLink >
-                                    <p:ajax listener="#{controlador.prepararModificacionPlan(plan)}" update="@form" immediate="true"/>
+                                    <p:ajax listener="#{controlador.prepararModificacionPlan(plan.idPlan)}" update="@form" immediate="true"/>
                                     <div align='center'>
                                         <p:graphicImage id="imgEdit" value="../../img/modificar.png"  />
                                     </div>
@@ -115,7 +115,7 @@
 
                             <!--Eliminar-->                          
                             <p:column headerText="Eliminar" style="font-size:11px; font-weight: bold" width="40" >
-                                <p:commandLink action="#{controlador.eliminarPlan(plan)}" onclick="if (!confirm('Esta seguro que desea eliminar este registro?'))
+                                <p:commandLink action="#{controlador.eliminarPlanProveedor(plan)}" onclick="if (!confirm('Esta seguro que desea eliminar este registro?'))
                                             return false;" ajax="false" immediate="true" process="@form">
                                     <div align='center'>
                                         <p:graphicImage id="imgElim" value="../../img/eliminar.png"  />

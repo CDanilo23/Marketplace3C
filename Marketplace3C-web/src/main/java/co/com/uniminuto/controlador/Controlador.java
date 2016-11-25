@@ -189,6 +189,12 @@ public class Controlador implements Serializable {
 
     public void eliminarPlan(Plan planParam) {
         planFacadeLocal.remove(planParam);
+        
+    }
+    
+    public void eliminarPlanProveedor(UsuarioPlan usuarioPlan) throws IOException {
+        usuarioPlanFacadeLocal.remove(usuarioPlan);
+        FacesContext.getCurrentInstance().getExternalContext().redirect("consultarPlan.xhtml");
     }
 
     public void crearPlan() throws IOException, ServletException {
@@ -525,11 +531,11 @@ public class Controlador implements Serializable {
         return planFacadeLocal.findAll();
     }
     
-    public List<Plan> getListaPlanesForIdUser() {
+    public List<UsuarioPlan> getListaPlanesForIdUser() {
         HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
         Integer idUser = (Integer) session.getAttribute("IdUser");
        
-        return usuarioPlanFacadeLocal.findPlan(idUser);
+        return usuarioPlanFacadeLocal.findByUsuarioPlan(idUser);
     }
     
     public List<Usuario> getListaProveedores(){

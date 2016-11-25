@@ -5,6 +5,7 @@
  */
 package co.com.uniminuto.util;
 
+import co.com.uniminuto.controlador.Controlador;
 import co.com.uniminuto.entities.Usuario;
 import com.sun.mail.util.MailSSLSocketFactory;
 import java.security.GeneralSecurityException;
@@ -65,6 +66,47 @@ public class ControladorEnvioCorreo {
             }
             message.setContent(mp);
             Transport.send(message);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }        
+    }
+    
+    public static void envioCorreoContacto(Usuario usuario,String mensaje) throws GeneralSecurityException {
+        MailSSLSocketFactory sf = new MailSSLSocketFactory();
+        sf.setTrustAllHosts(true);
+        Properties properties = new Properties();
+        properties.put("mail.smtp.host", "smtp.gmail.com");
+        properties.put("mail.smtp.port", 587);
+        properties.put("mail.smtp.auth", "true");
+        properties.put("mail.smtp.starttls.enable", "true");
+        properties.put("mail.smtp.ssl.socketFactory", sf);
+        Session session;
+        session = Session.getInstance(properties,
+                new javax.mail.Authenticator() {
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication("thebigdani@gmail.com", "187983cdo");
+            }
+        });
+        try {
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress("thebigdani@gmail.com"));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(usuario.getCorreo()));
+            message.setSubject("Contacto desde cliente del MarketPlace " + new Date());
+            message.setSentDate(new Date());
+            
+            final List<MimeBodyPart> parteMensaje = new ArrayList<MimeBodyPart>();
+            MimeBodyPart mbp = new MimeBodyPart();
+                     
+            mbp.setContent(mensaje,"text/plain");
+            parteMensaje.add(mbp);
+            final Multipart mp = new MimeMultipart();
+            for (MimeBodyPart mbpEnC : parteMensaje) {
+                mp.addBodyPart(mbpEnC);
+            }
+            message.setContent(mp);
+            Transport.send(message);
+            //Controlador c = new Controlador();
+            //c.redireccionarCorreo();            
         } catch (Exception e) {
             e.printStackTrace();
         }

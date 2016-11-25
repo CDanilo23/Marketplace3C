@@ -22,7 +22,7 @@
                 </p:menubar>
 
                 <p:layout style="min-width:400px;min-height:700px;" >                    
-                    <p:layoutUnit position="west" resizable="true" size="250" minSize="40" maxSize="400" >
+                   <p:layoutUnit position="west" resizable="true" size="250" minSize="40" maxSize="400" >
                         <p:panelMenu style="width:300px">
                             <p:submenu label="Proveedores">
                                 <p:menuitem value="Consultar Proveedores" actionListener="#{messagesUtil.configuracionClientes()}" icon="ui-icon-person" 
@@ -38,7 +38,7 @@
                         </p:panelMenu>
                     </p:layoutUnit>
                     <p:layoutUnit position="center">
-                        <p:dataTable value="#{controlador.listaProveedores}" 
+                        <p:dataTable value="#{controlador.contactoProveedor}" 
                                      id="dtProveedores" 
                                      paginator="true" 
                                      rows="5"
@@ -46,22 +46,28 @@
                                      emptyMessage="No se encontraron proveedores"
                                      rowsPerPageTemplate="5,10,15" 
                                      styleClass="tablaRes"
-                                     var="proveedores" >
+                                     var="proveedor" >
 
                             <f:facet name="header">  
-                                Proveedores registrados en el sistema
-                            </f:facet>                           
+                                Contactar Proveedor
+                            </f:facet>                          
                             <p:column headerText="Empresa"
-                                      sortBy="#{proveedores.empresa}"
-                                      filterBy="#{proveedores.empresa}" 
+                                      sortBy="#{proveedor.empresa}"
+                                      filterBy="#{proveedor.empresa}" 
                                       filterMatchMode="contains">
-                                <h:outputText value="#{proveedores.empresa}" />
+                                <h:outputText value="#{proveedor.empresa}" />
                             </p:column>
                             
-                            <p:column headerText="Ver Planes Que Ofrece"
+                            <p:column headerText="Mensaje"
                                       filterMatchMode="contains">
                                 <div align ="center">
-                                    <p:commandLink value="Ver Planes" action="#{controlador.obtenerUsuarioPlan(proveedores.idUsuario)}"/>                                                                         
+                                    <p:inputText id="idMensaje" value="#{controlador.mensaje}"/>                                                                         
+                                </div>    
+                            </p:column>                                                        
+                            <p:column headerText="Enviar"
+                                      filterMatchMode="contains">
+                                <div align ="center">
+                                    <p:commandLink value="Contactar" action="#{controlador.enivarCorreoContacto(proveedor, controlador.mensaje)}"/>                                                                         
                                 </div>    
                             </p:column>
                         </p:dataTable>                        

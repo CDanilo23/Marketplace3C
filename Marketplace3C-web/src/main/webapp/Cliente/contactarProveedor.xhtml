@@ -50,7 +50,7 @@
 
                             <f:facet name="header">  
                                 Proveedores registrados en el sistema
-                            </f:facet>                           
+                            </f:facet>                          
                             <p:column headerText="Empresa"
                                       sortBy="#{proveedores.empresa}"
                                       filterBy="#{proveedores.empresa}" 
@@ -58,10 +58,10 @@
                                 <h:outputText value="#{proveedores.empresa}" />
                             </p:column>
                             
-                            <p:column headerText="Ver Planes Que Ofrece"
+                            <p:column headerText="Contacto"
                                       filterMatchMode="contains">
                                 <div align ="center">
-                                    <p:commandLink value="Ver Planes" action="#{controlador.obtenerUsuarioPlan(proveedores.idUsuario)}"/>                                                                         
+                                    <p:commandLink value="Contactar" action="#{controlador.setContactoProveedor(proveedores)}"/>                                                                         
                                 </div>    
                             </p:column>
                         </p:dataTable>                        

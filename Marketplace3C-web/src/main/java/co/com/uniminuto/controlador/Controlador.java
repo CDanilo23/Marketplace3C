@@ -59,6 +59,7 @@ public class Controlador implements Serializable {
 
     private String usuario;
     private String password;
+    private String mensaje;
     private Plan planCurrent;
     private Hotel hotelCurrent;
     private Parque parqueCurrent;
@@ -457,8 +458,37 @@ public class Controlador implements Serializable {
         List<Usuario> lu = new ArrayList<>();
         lu = (List<Usuario>) contex.getExternalContext().getSessionMap().get("detalleProveedor");
         return lu;
-    }  
-
+    }
+    
+    public void enivarCorreoContacto(Usuario usuario, String mensaje) throws GeneralSecurityException{        
+         ControladorEnvioCorreo.envioCorreoContacto(usuario, mensaje);
+    }
+    
+    public void setContactoProveedor(Usuario usuario) throws IOException{                
+        FacesContext context = FacesContext.getCurrentInstance();        
+        context.getExternalContext().getSessionMap().put("contactoProveedor", usuario);
+        context.getExternalContext().redirect("../Cliente/contactarProveedorMensaje.xhtml");
+    }
+    
+    public Usuario getContactoProveedor(){
+        FacesContext contex = FacesContext.getCurrentInstance();
+        Usuario u = new Usuario();
+        u = (Usuario) contex.getExternalContext().getSessionMap().get("contactoProveedor");
+        return u;
+    }
+    
+    public void setMensaje(String mensaje){
+        this.mensaje = mensaje;
+    }
+    
+    public String getMensaje(){
+        return mensaje;
+    }
+    
+    public void redireccionarCorreo() throws IOException{
+        FacesContext context = FacesContext.getCurrentInstance();                
+        context.getExternalContext().redirect("../Cliente/ResultadoCorreo.xhtml");
+    }
     public List<Hotel> getListaHoteles() {
         return hotelFacadeLocal.findAllHoteles();
     }

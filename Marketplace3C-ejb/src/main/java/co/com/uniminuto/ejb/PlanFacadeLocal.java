@@ -32,4 +32,6 @@ public interface PlanFacadeLocal {
     
     Plan merge (Plan plan);
     
+    List<Plan> findPlanById(Integer idPlan);
+    
 }

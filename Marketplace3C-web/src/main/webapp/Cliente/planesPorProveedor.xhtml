@@ -43,7 +43,7 @@
                     </p:layoutUnit>               
                     <p:layoutUnit position="center">
                         <p:dataTable id="dtProveedores"
-                                     value="#{controlador.nombrePlan}"
+                                     value="#{controlador.planesPorProveedor}"
                                      rows="5"
                                      paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                      emptyMessage="No se encontraron planes para el proveedor seleccionado"
@@ -62,18 +62,25 @@
                             </p:column>
 
                             <p:column headerText="Costo"
-                                      sortBy="#{controlador.costoPlan}"
-                                      filterBy="#{controlador.costoPlan}"
+                                      sortBy="#{plan.costo}"
+                                      filterBy="#{plan.costo}"
                                       filterMatchMode="contains">
-                                <h:outputText value="#{controlador.costoPlan}" />
+                                <h:outputText value="#{plan.costo}" />
                             </p:column>
 
                             <p:column headerText="Descripción"
-                                      sortBy="#{controlador.descripcion}"
-                                      filterBy="#{controlador.descripcion}" 
+                                      sortBy="#{plan.descripcion}"
+                                      filterBy="#{plan.descripcion}" 
                                       filterMatchMode="contains">
-                                <h:outputText value="#{controlador.descripcion}" />
-                            </p:column>                                                                                                                                            
+                                <h:outputText value="#{plan.descripcion}" />
+                            </p:column>
+                            
+                            <p:column headerText="Ver Planes Que Ofrece"
+                                      filterMatchMode="contains">
+                                <div align ="center">
+                                    <p:commandLink value="Ver Planes" action="#{controlador.obtenerPlanPorId(plan.idPlan)}"/>                                                                     
+                                </div>    
+                            </p:column>
                         </p:dataTable>                        
                     </p:layoutUnit>
                 </p:layout>

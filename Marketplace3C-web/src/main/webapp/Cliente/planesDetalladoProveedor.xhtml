@@ -40,58 +40,68 @@
 
                     <p:layoutUnit position="center">
                         
-                    </p:layoutUnit>                
+                    </p:layoutUnit>               
                     <p:layoutUnit position="center">
                         <p:dataTable id="dtProveedores"
-                                     value="#{controlador.detalleDelProveedor}"
+                                     value="#{controlador.planDelProveedor}"
                                      rows="5"
                                      paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                     emptyMessage="No se encontraron detalles del proveedor"
-                                     var="detalleProveedor">
+                                     emptyMessage="No se encontraron planes para el proveedor seleccionado"
+                                     var="plan">
 
                             <f:facet name="header">  
-                                Información Detallada Del Proveedor
+                                Información Del Plan Detallada
                             </f:facet>
 
                             <p:column  
                                 headerText="Nombre" 
-                                      sortBy="#{detalleProveedor.nombre}"
-                                      filterBy="#{detalleProveedor.nombre}" 
+                                sortBy="#{plan.nombrePlan}"
+                                filterBy="#{plan.nombrePlan}" 
                                       filterMatchMode="contains">
-                                <h:outputText value="#{detalleProveedor.nombre}" />
+                                <h:outputText value="#{plan.nombrePlan}" />
                             </p:column>
 
-                            <p:column headerText="Empresa"
-                                      sortBy="#{detalleProveedor.empresa}"
-                                      filterBy="#{detalleProveedor.empresa}"
+                            <p:column headerText="Costo"
+                                      sortBy="#{plan.costo}"
+                                      filterBy="#{plan.costo}"
                                       filterMatchMode="contains">
-                                <h:outputText value="#{detalleProveedor.empresa}" />
+                                <h:outputText value="#{plan.costo}" />
                             </p:column>
 
-                            <p:column headerText="Número De Documento"
-                                      sortBy="#{detalleProveedor.numeroDocumento}"
-                                      filterBy="#{detalleProveedor.numeroDocumento}" 
+                            <p:column headerText="Descripción"
+                                      sortBy="#{plan.descripcion}"
+                                      filterBy="#{plan.descripcion}" 
                                       filterMatchMode="contains">
-                                <h:outputText value="#{detalleProveedor.numeroDocumento}" />
-                            </p:column>                                                        
-                            <p:column headerText="Dirección"
-                                      sortBy="#{detalleProveedor.direccion}"
-                                      filterBy="#{detalleProveedor.direccion}" 
+                                <h:outputText value="#{plan.descripcion}" />
+                            </p:column>
+                            
+                            <p:column headerText="Días"
+                                      sortBy="#{plan.dias}"
+                                      filterBy="#{plan.dias}" 
                                       filterMatchMode="contains">
-                                <h:outputText value="#{detalleProveedor.direccion}" />
-                            </p:column>                                                        
-                            <p:column headerText="Correo"
-                                      sortBy="#{detalleProveedor.correo}"
-                                      filterBy="#{detalleProveedor.correo}" 
+                                <h:outputText value="#{plan.dias}" />
+                            </p:column>
+                            
+                            <p:column headerText="Noches"
+                                      sortBy="#{plan.noches}"
+                                      filterBy="#{plan.noches}" 
                                       filterMatchMode="contains">
-                                <h:outputText value="#{detalleProveedor.correo}" />
-                            </p:column>                                                        
-                            <p:column headerText="Telefono"
-                                      sortBy="#{detalleProveedor.telefono}"
-                                      filterBy="#{detalleProveedor.telefono}" 
+                                <h:outputText value="#{plan.noches}" />
+                            </p:column>
+                            
+                            <p:column headerText="Parque"
+                                      sortBy="#{plan.idParque.parque}"
+                                      filterBy="#{plan.idParque.parque}" 
                                       filterMatchMode="contains">
-                                <h:outputText value="#{detalleProveedor.telefono}" />
-                            </p:column>                                                        
+                                <h:outputText value="#{plan.idParque.parque}" />
+                            </p:column>
+                            
+                            <p:column headerText="Hotel"
+                                      sortBy="#{plan.idHotel.nombre}"
+                                      filterBy="#{plan.idHotel.nombre}" 
+                                      filterMatchMode="contains">
+                                <h:outputText value="#{plan.idHotel.nombre}" />
+                            </p:column>
                         </p:dataTable>                        
                     </p:layoutUnit>
                 </p:layout>

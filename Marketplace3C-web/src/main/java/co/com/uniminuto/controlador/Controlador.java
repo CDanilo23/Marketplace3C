@@ -66,8 +66,7 @@ public class Controlador implements Serializable {
     private boolean flagModificarPlan;
     private boolean flagCrearPlan;
     private boolean flagCrearProveedor;
-    private boolean flagModificarProveedor;
-    private List<Integer> flagCantPlanes = new ArrayList<>();
+    private boolean flagModificarProveedor;    
     private String destination = "C:\\Users\\pc\\Documents\\NetBeansProjects\\Marketplace2Corte\\Marketplace2Corte\\Marketplace3C-web\\src\\main\\webapp\\img\\";
     private File file;
 
@@ -411,12 +410,7 @@ public class Controlador implements Serializable {
         lu = usuarioFacadeLocal.findUserByIdUsuario(idUsuario);
         
         FacesContext context = FacesContext.getCurrentInstance();
-        context.getExternalContext().getSessionMap().put("nombre", lu.get(0).getNombre());
-        context.getExternalContext().getSessionMap().put("empresa", lu.get(0).getEmpresa());
-        context.getExternalContext().getSessionMap().put("numDoc", lu.get(0).getNumeroDocumento());
-        context.getExternalContext().getSessionMap().put("direccion", lu.get(0).getDireccion());
-        context.getExternalContext().getSessionMap().put("correo", lu.get(0).getCorreo());
-        context.getExternalContext().getSessionMap().put("telefono", lu.get(0).getTelefono());                       
+        context.getExternalContext().getSessionMap().put("detalleProveedor",lu);        
         context.getExternalContext().redirect("../Cliente/detalleProveedor.xhtml");               
     }
     
@@ -426,98 +420,44 @@ public class Controlador implements Serializable {
         FacesContext context = FacesContext.getCurrentInstance();
         try{
             lp = usuarioPlanFacadeLocal.findPlan(idUsuario);
-            System.out.println("NOMBRE DEL PLAN " + lp.get(0).getNombrePlan());
-            if(flagCantPlanes.isEmpty()){
-                System.out.println("ENTRO AL LLENAR EL ARREGLO");
-                for(int i=0;i < lp.size();i++){
-                    flagCantPlanes.add(i);
-                }
-            }else{
-                System.out.println("ENTRO AL REMOVE ALL");
-                lp.removeAll(lp);
-            }
-        
-            System.out.println("COSTO FLAG PLANES BUSCADOR" + flagCantPlanes.size());
-            context.getExternalContext().getSessionMap().put("nombrePlan", lp);
-            context.getExternalContext().getSessionMap().put("costo", lp.get(0).getCosto());
-            context.getExternalContext().getSessionMap().put("descripcion", lp.get(0).getDescripcion());
-            context.getExternalContext().getSessionMap().put("dias", lp.get(0).getDias());
-            context.getExternalContext().getSessionMap().put("noches", lp.get(0).getNoches());
-            context.getExternalContext().getSessionMap().put("parque", lp.get(0).getIdParque().getParque());                       
-            context.getExternalContext().getSessionMap().put("hotel", lp.get(0).getIdHotel().getNombre());
-            context.getExternalContext().redirect("../Cliente/planesPorProveedor.xhtml");                
+            
+            context.getExternalContext().getSessionMap().put("planesPorProveedor", lp);
+            context.getExternalContext().redirect("../Cliente/planesPorProveedor.xhtml");
         }catch(Exception e){
-            e.getCause();
-            System.out.println("ENTRO A LA EXCEPCION");
+            e.getCause();            
             context.getExternalContext().redirect("../Cliente/planesPorProveedorError.xhtml");                
         }        
     }
     
-    public List<Plan> getNombrePlan(){
+    public void obtenerPlanPorId(Integer idPlan) throws IOException{
+        List<Plan> lp = new ArrayList<>();
+        
+        FacesContext context = FacesContext.getCurrentInstance();
+        lp = planFacadeLocal.findPlanById(idPlan);
+        context.getExternalContext().getSessionMap().put("planDelProveedor", lp);
+        context.getExternalContext().redirect("../Cliente/planesDetalladoProveedor.xhtml");                
+    }        
+    
+    public List<Plan> getPlanDelProveedor(){
         FacesContext contex = FacesContext.getCurrentInstance();
         List<Plan> lp = new ArrayList<>();
-        lp = (List<Plan>) contex.getExternalContext().getSessionMap().get("nombrePlan");
+        lp = (List<Plan>) contex.getExternalContext().getSessionMap().get("planDelProveedor");
         return lp;
     }
     
-    public String getCostoPlan(){
+    public List<Plan> getPlanesPorProveedor(){
         FacesContext contex = FacesContext.getCurrentInstance();
-        String costoPlan = (String.valueOf(contex.getExternalContext().getSessionMap().get("costo")));
-        return costoPlan;
-    }
-    
-    public String getDescripcion(){
+        List<Plan> lp = new ArrayList<>();
+        lp = (List<Plan>) contex.getExternalContext().getSessionMap().get("planesPorProveedor");
+        return lp;
+    }    
+            
+    public List<Usuario> getDetalleDelProveedor() {
         FacesContext contex = FacesContext.getCurrentInstance();
-        String descripcionPlan = (String.valueOf(contex.getExternalContext().getSessionMap().get("descripcion")));
-        return descripcionPlan;
-    }
-    
-    public String getNombre() {
-        FacesContext contex = FacesContext.getCurrentInstance();
-        String nombre = (String.valueOf(contex.getExternalContext().getSessionMap().get("nombre")));
-        return nombre;
+        List<Usuario> lu = new ArrayList<>();
+        lu = (List<Usuario>) contex.getExternalContext().getSessionMap().get("detalleProveedor");
+        return lu;
     }  
-
-    public String getEmpresa() {
-        FacesContext contex = FacesContext.getCurrentInstance();
-        String empresa = (String.valueOf(contex.getExternalContext().getSessionMap().get("empresa")));
-        return empresa;
-    }
-    
-    public String getDocumento() {
-        FacesContext contex = FacesContext.getCurrentInstance();
-        String documento = (String.valueOf(contex.getExternalContext().getSessionMap().get("numDoc")));
-        return documento;
-    }
-    
-    public String getDireccion() {
-        FacesContext contex = FacesContext.getCurrentInstance();
-        String direccion = (String.valueOf(contex.getExternalContext().getSessionMap().get("direccion")));
-        return direccion;
-    }
-    
-    public String getCorreo() {
-        FacesContext contex = FacesContext.getCurrentInstance();
-        String correo = (String.valueOf(contex.getExternalContext().getSessionMap().get("correo")));
-        return correo;
-    }
-    
-    public String getTelefono() {
-        FacesContext contex = FacesContext.getCurrentInstance();
-        String telefono = (String.valueOf(contex.getExternalContext().getSessionMap().get("telefono")));
-        return telefono;
-    }
-    
-    public List<Integer> getObjetoCantPlanes(){         
-        System.out.println("OBJETO CNAT PLANES() " + flagCantPlanes.size());
-        return flagCantPlanes;
-    }
-    
-    public List<Integer> getObjeto(){
-        List<Integer> objeto = new ArrayList<>();
-        objeto.add(0);
-        return objeto;
-    }
 
     public List<Hotel> getListaHoteles() {
         return hotelFacadeLocal.findAllHoteles();

@@ -6,6 +6,8 @@
 package co.com.uniminuto.ejb;
 
 import co.com.uniminuto.entities.Plan;
+import java.util.ArrayList;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -31,5 +33,16 @@ public class PlanFacade extends AbstractFacade<Plan> implements PlanFacadeLocal 
     
     public Plan merge(Plan plan){
         return em.merge(plan);
+    }
+
+    @Override
+    public List<Plan> findPlanById(Integer idPlan) {
+         List<Plan> lp = new ArrayList<>();
+        try {
+            lp = em.createNamedQuery("Plan.findByIdPlan").setParameter("idPlan", idPlan).getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return lp;
     }
 }

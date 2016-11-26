@@ -67,13 +67,13 @@ public class Controlador implements Serializable {
     private boolean flagModificarPlan;
     private boolean flagCrearPlan;
     private boolean flagCrearProveedor;
-    private boolean flagModificarProveedor;    
+    private boolean flagModificarProveedor;
     private String destination = "C:\\Users\\pc\\Documents\\NetBeansProjects\\Marketplace2Corte\\Marketplace2Corte\\Marketplace3C-web\\src\\main\\webapp\\img\\";
     private File file;
 
     @EJB(mappedName = "UsuarioFacadeBean", lookup = "java:app/Marketplace3C-ejb-1.0-SNAPSHOT/UsuarioFacade!co.com.uniminuto.ejb.UsuarioFacadeLocal")
     private UsuarioFacadeLocal usuarioFacadeLocal;
-    
+
     @EJB(mappedName = "UsuarioPlanFacadeBean", lookup = "java:app/Marketplace3C-ejb-1.0-SNAPSHOT/UsuarioPlanFacade!co.com.uniminuto.ejb.UsuarioPlanFacadeLocal")
     private UsuarioPlanFacadeLocal usuarioPlanFacadeLocal;
 
@@ -105,11 +105,11 @@ public class Controlador implements Serializable {
             this.flagModificarPlan = true;
             session.removeAttribute("edicionPlan");
         }
-        if(session.getAttribute("edicionUsuario") == null){
+        if (session.getAttribute("edicionUsuario") == null) {
             this.flagCrearProveedor = true;
             this.flagModificarProveedor = false;
             this.usuarioCurrent = new Usuario();
-        }else{
+        } else {
             this.usuarioCurrent = (Usuario) session.getAttribute("edicionUsuario");
             this.flagCrearPlan = false;
             this.flagModificarProveedor = true;
@@ -120,10 +120,10 @@ public class Controlador implements Serializable {
     public void login() {
         try {
             ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
-            List<Usuario> listUser = usuarioFacadeLocal.findUserByIdAndPass(usuario, password);  
+            List<Usuario> listUser = usuarioFacadeLocal.findUserByIdAndPass(usuario, password);
             HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
             session.setAttribute("IdUser", listUser.get(0).getIdUsuario());
-            
+
             if (!listUser.isEmpty()) {
 
                 switch (listUser.get(0).getRol().getIdRol()) {
@@ -164,23 +164,23 @@ public class Controlador implements Serializable {
         planFacadeLocal.edit(this.planCurrent);
         FacesContext.getCurrentInstance().getExternalContext().redirect("configuracionPlanes.xhtml");
     }
-    
+
     public void modificarPlanProveedor() throws IOException {
         this.flagCrearPlan = true;
         this.flagModificarPlan = false;
         planFacadeLocal.edit(this.planCurrent);
         FacesContext.getCurrentInstance().getExternalContext().redirect("consultarPlan.xhtml");
     }
-    
-    public void prepararModificacionProveedor(Usuario usuarioParam) throws IOException{
+
+    public void prepararModificacionProveedor(Usuario usuarioParam) throws IOException {
         HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
         session.setAttribute("edicionUsuario", usuarioParam);
         this.flagCrearProveedor = false;
         this.flagModificarProveedor = true;
         FacesContext.getCurrentInstance().getExternalContext().redirect("crearProveedor.xhtml");
     }
-    
-    public void modificarProveedor()throws IOException{
+
+    public void modificarProveedor() throws IOException {
         this.flagModificarProveedor = false;
         this.flagCrearProveedor = true;
         this.usuarioFacadeLocal.edit(this.usuarioCurrent);
@@ -189,9 +189,9 @@ public class Controlador implements Serializable {
 
     public void eliminarPlan(Plan planParam) {
         planFacadeLocal.remove(planParam);
-        
+
     }
-    
+
     public void eliminarPlanProveedor(UsuarioPlan usuarioPlan) throws IOException {
         usuarioPlanFacadeLocal.remove(usuarioPlan);
         FacesContext.getCurrentInstance().getExternalContext().redirect("consultarPlan.xhtml");
@@ -214,7 +214,7 @@ public class Controlador implements Serializable {
     public void crearPlanIdUser() throws IOException, ServletException {
         HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
         Integer idUser = (Integer) session.getAttribute("IdUser");
-       
+
         if (file != null) {
             Archivo archivo = new Archivo();
             Usuario u = new Usuario();
@@ -227,16 +227,21 @@ public class Controlador implements Serializable {
             u.setIdUsuario(idUser);
             usuarioPlan.setIdUsuario(u);
             usuarioPlan.setIdPlan(planCurrent);
-            
+
             usuarioPlanFacadeLocal.merge(usuarioPlan);
 
             FacesContext.getCurrentInstance().getExternalContext().redirect("consultarPlan.xhtml");
         }
     }
-    
+
     public void crearProveedor() throws IOException {
-        usuarioFacadeLocal.create(this.usuarioCurrent);
-        FacesContext.getCurrentInstance().getExternalContext().redirect("configuracionProveedores.xhtml");
+
+        try {
+            usuarioFacadeLocal.create(this.usuarioCurrent);
+            FacesContext.getCurrentInstance().getExternalContext().redirect("configuracionProveedores.xhtml");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void eliminarProveedor(Usuario usuario) throws IOException {
@@ -393,7 +398,7 @@ public class Controlador implements Serializable {
         return items;
 
     }
-    
+
     public SelectItem[] getComboTipoDocumento() {
 
         SelectItem[] items = new SelectItem[5];
@@ -405,90 +410,91 @@ public class Controlador implements Serializable {
         return items;
 
     }
-    
-    public void obtenerDetallesProveedor(Integer idUsuario) throws IOException{
+
+    public void obtenerDetallesProveedor(Integer idUsuario) throws IOException {
         List<Usuario> lu = new ArrayList<>();
         lu = usuarioFacadeLocal.findUserByIdUsuario(idUsuario);
-        
+
         FacesContext context = FacesContext.getCurrentInstance();
-        context.getExternalContext().getSessionMap().put("detalleProveedor",lu);        
-        context.getExternalContext().redirect("../Cliente/detalleProveedor.xhtml");               
+        context.getExternalContext().getSessionMap().put("detalleProveedor", lu);
+        context.getExternalContext().redirect("../Cliente/detalleProveedor.xhtml");
     }
-    
-    public void obtenerUsuarioPlan(Integer idUsuario) throws IOException{
+
+    public void obtenerUsuarioPlan(Integer idUsuario) throws IOException {
         List<Plan> lp = new ArrayList<>();
-                
+
         FacesContext context = FacesContext.getCurrentInstance();
-        try{
+        try {
             lp = usuarioPlanFacadeLocal.findPlan(idUsuario);
-            
+
             context.getExternalContext().getSessionMap().put("planesPorProveedor", lp);
             context.getExternalContext().redirect("../Cliente/planesPorProveedor.xhtml");
-        }catch(Exception e){
-            e.getCause();            
-            context.getExternalContext().redirect("../Cliente/planesPorProveedorError.xhtml");                
-        }        
+        } catch (Exception e) {
+            e.getCause();
+            context.getExternalContext().redirect("../Cliente/planesPorProveedorError.xhtml");
+        }
     }
-    
-    public void obtenerPlanPorId(Integer idPlan) throws IOException{
+
+    public void obtenerPlanPorId(Integer idPlan) throws IOException {
         List<Plan> lp = new ArrayList<>();
-        
+
         FacesContext context = FacesContext.getCurrentInstance();
         lp = planFacadeLocal.findPlanById(idPlan);
         context.getExternalContext().getSessionMap().put("planDelProveedor", lp);
-        context.getExternalContext().redirect("../Cliente/planesDetalladoProveedor.xhtml");                
-    }        
-    
-    public List<Plan> getPlanDelProveedor(){
+        context.getExternalContext().redirect("../Cliente/planesDetalladoProveedor.xhtml");
+    }
+
+    public List<Plan> getPlanDelProveedor() {
         FacesContext contex = FacesContext.getCurrentInstance();
         List<Plan> lp = new ArrayList<>();
         lp = (List<Plan>) contex.getExternalContext().getSessionMap().get("planDelProveedor");
         return lp;
     }
-    
-    public List<Plan> getPlanesPorProveedor(){
+
+    public List<Plan> getPlanesPorProveedor() {
         FacesContext contex = FacesContext.getCurrentInstance();
         List<Plan> lp = new ArrayList<>();
         lp = (List<Plan>) contex.getExternalContext().getSessionMap().get("planesPorProveedor");
         return lp;
-    }    
-            
+    }
+
     public List<Usuario> getDetalleDelProveedor() {
         FacesContext contex = FacesContext.getCurrentInstance();
         List<Usuario> lu = new ArrayList<>();
         lu = (List<Usuario>) contex.getExternalContext().getSessionMap().get("detalleProveedor");
         return lu;
     }
-    
-    public void enivarCorreoContacto(Usuario usuario, String mensaje) throws GeneralSecurityException{        
-         ControladorEnvioCorreo.envioCorreoContacto(usuario, mensaje);
+
+    public void enivarCorreoContacto(Usuario usuario, String mensaje) throws GeneralSecurityException {
+        ControladorEnvioCorreo.envioCorreoContacto(usuario, mensaje);
     }
-    
-    public void setContactoProveedor(Usuario usuario) throws IOException{                
-        FacesContext context = FacesContext.getCurrentInstance();        
+
+    public void setContactoProveedor(Usuario usuario) throws IOException {
+        FacesContext context = FacesContext.getCurrentInstance();
         context.getExternalContext().getSessionMap().put("contactoProveedor", usuario);
         context.getExternalContext().redirect("../Cliente/contactarProveedorMensaje.xhtml");
     }
-    
-    public Usuario getContactoProveedor(){
+
+    public Usuario getContactoProveedor() {
         FacesContext contex = FacesContext.getCurrentInstance();
         Usuario u = new Usuario();
         u = (Usuario) contex.getExternalContext().getSessionMap().get("contactoProveedor");
         return u;
     }
-    
-    public void setMensaje(String mensaje){
+
+    public void setMensaje(String mensaje) {
         this.mensaje = mensaje;
     }
-    
-    public String getMensaje(){
+
+    public String getMensaje() {
         return mensaje;
     }
-    
-    public void redireccionarCorreo() throws IOException{
-        FacesContext context = FacesContext.getCurrentInstance();                
+
+    public void redireccionarCorreo() throws IOException {
+        FacesContext context = FacesContext.getCurrentInstance();
         context.getExternalContext().redirect("../Cliente/ResultadoCorreo.xhtml");
     }
+
     public List<Hotel> getListaHoteles() {
         return hotelFacadeLocal.findAllHoteles();
     }
@@ -500,15 +506,15 @@ public class Controlador implements Serializable {
     public List<Plan> getListaPlanes() {
         return planFacadeLocal.findAll();
     }
-    
+
     public List<UsuarioPlan> getListaPlanesForIdUser() {
         HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
         Integer idUser = (Integer) session.getAttribute("IdUser");
-       
+
         return usuarioPlanFacadeLocal.findByUsuarioPlan(idUser);
     }
-    
-    public List<Usuario> getListaProveedores(){
+
+    public List<Usuario> getListaProveedores() {
         return usuarioFacadeLocal.findByRol(new Rol(RolEnum.PROVEEDOR.getValor()));
     }
 
